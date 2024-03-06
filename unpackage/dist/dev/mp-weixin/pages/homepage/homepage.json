@@ -1,0 +1,8 @@
+{
+  "navigationBarTitleText": "首页",
+  "enablePullDownRefresh": false,
+  "usingComponents": {
+    "input-modal": "../../components/CustomModal/InputModal",
+    "device-card": "../../components/CustomModal/DeviceCard"
+  }
+}
