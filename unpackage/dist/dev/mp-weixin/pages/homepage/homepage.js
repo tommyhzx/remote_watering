@@ -10,23 +10,38 @@ const _sfc_main = {
   data() {
     return {
       modalVisible: false,
-      deviceSN: []
+      deviceSN: [],
+      defaultDevice: {
+        deviceSN: "",
+        deviceName: "默认设备",
+        devicePlace: "设备位置"
+      },
+      devices: []
     };
   },
   methods: {
     addDevice() {
       this.modalVisible = true;
     },
-    onConfirm(deviceId) {
+    onConfirm(device) {
       this.modalVisible = false;
-      if (this.deviceSN.includes(deviceId)) {
+      if (device == "") {
+        common_vendor.index.showToast({
+          title: "设备号不能为空"
+        });
+        return;
+      }
+      if (this.deviceSN.includes(device)) {
         common_vendor.index.showToast({
           title: "设备已存在"
         });
       } else {
-        this.deviceSN.push(deviceId);
+        this.devices.push({
+          deviceSN: device.deviceSN,
+          deviceName: device.deviceName,
+          devicePlace: device.devicePlace
+        });
       }
-      console.log("当前设备SN", this.deviceSN);
     },
     onCancel() {
       this.modalVisible = false;
@@ -40,10 +55,19 @@ if (!Array) {
 }
 function _sfc_render(_ctx, _cache, $props, $setup, $data, $options) {
   return {
-    a: common_vendor.o((...args) => $options.addDevice && $options.addDevice(...args)),
-    b: common_vendor.o($options.onConfirm),
-    c: common_vendor.o($options.onCancel),
-    d: common_vendor.p({
+    a: common_vendor.f($data.devices, (device, index, i0) => {
+      return {
+        a: "27eb7476-0-" + i0,
+        b: common_vendor.p({
+          device
+        }),
+        c: index
+      };
+    }),
+    b: common_vendor.o((...args) => $options.addDevice && $options.addDevice(...args)),
+    c: common_vendor.o($options.onConfirm),
+    d: common_vendor.o($options.onCancel),
+    e: common_vendor.p({
       visible: $data.modalVisible
     })
   };

@@ -2,11 +2,10 @@
 	<view>		
 		<swiper class="swiper" interval="interval" indicator-dots="true" 
 		circular="true">
-			<swiper-item>
-				<DeviceCard>123</DeviceCard>
-			</swiper-item>
-			<swiper-item>
-				<DeviceCard>123</DeviceCard>
+		
+			<swiper-item v-for="(device, index) in devices" :key="index">
+			<!-- <swiper-item>	 -->
+				<DeviceCard :device="device">123</DeviceCard>
 			</swiper-item>
 		</swiper>
 		<button @click="addDevice">添加设备</button>
@@ -25,7 +24,13 @@
 		data() {
 			return {
 				modalVisible: false,
-				deviceSN:[]
+				deviceSN:[],
+				defaultDevice:{
+					deviceSN:'',
+					deviceName:"默认设备",
+					devicePlace:"设备位置",
+				},
+				devices:[],
 			};
 		},
 		methods:{
@@ -33,16 +38,26 @@
 				this.modalVisible = true;
 				
 			},
-			onConfirm(deviceId){
+			onConfirm(device){
 				this.modalVisible = false;			
-				if(this.deviceSN.includes(deviceId)){
+				if(device == ''){
+					uni.showToast({
+						title:"设备号不能为空"
+					})
+					return;
+				}
+				if(this.deviceSN.includes(device)){
 					uni.showToast({
 						title:"设备已存在"
 					})
 				}else{
-					this.deviceSN.push(deviceId);
+					this.devices.push({
+						deviceSN:device.deviceSN,
+						deviceName:device.deviceName,
+						devicePlace:device.devicePlace
+					})
 				}
-				console.log("当前设备SN",this.deviceSN)
+				
 			},
 			onCancel(){
 				this.modalVisible = false;

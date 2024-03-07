@@ -4,8 +4,8 @@
 			 <view class="device-card">							 
 				<view class="deviceInfo">
 					<image class="device-pic" src="/static/pic/device.png" mode="heightFix"></image>
-					<text class="device-text">毛黍黍1号</text>
-					<text class="device-place">阳台</text>
+					<text class="device-text">{{device.deviceName}}</text>
+					<text class="device-place">{{device.devicePlace}}</text>
 				</view>		
 			</view>
 			<view class="wifi-containor">
@@ -16,7 +16,7 @@
 			</view>
 			<view class="button-containor">
 				<view class='pic-button'>
-					<image class="col2Image" src="/static/pic/watering.png" mode="heightFix" @click="onWaterring(deviceCard)"></image>
+					<image class="col2Image" src="/static/pic/watering.png" mode="heightFix" @click="onWaterring(device)"></image>
 				</view>
 			 </view>
 		<!-- </view> -->
@@ -30,14 +30,23 @@
 				
 			};
 		},
+		props:{
+			device:{
+				deviceSN:String,
+				deviceName:String,
+				devicePlace:String,	
+			}
+					
+		},
 		methods:{
-			onWaterring(){
+			onWaterring(device){
+				console.log("test",device)
 				
 			},
 			deleteDevice(){
 				
 			}
-		}
+		},
 	}
 </script>
 
@@ -96,39 +105,4 @@
 			
 		}
 	}
-	
-	// .device-card{
-	// 		height: 250rpx;
-	// 		width: 710rpx;
-	// 		background-color: #EDF5FB;
-	// 		margin: 20rpx;
-	// 		border-radius: 30rpx;
-	// 		display: flex;
-	// 		justify-content: space-around;
-	// 		.col1{
-	// 			display: flex;
-	// 			flex-direction: column;
-	// 			justify-content: space-around;
-	// 			align-items: center;
-	// 			.logo1{
-	// 				height: 130rpx;
-	// 			}
-	// 			.text{
-	// 				display: flex;
-	// 				flex-direction: column;
-	// 				align-items: center;
-	// 			}
-	// 		}
-	// 		.col2{
-	// 			display: flex;
-	// 			flex-direction: column;
-	// 			justify-content: center;
-	// 			align-items: center;
-	// 			.col2Image{
-	// 				height: 50rpx;
-	// 				width: 50rpx;
-	// 			}
-	// 		}
-			
-	// 	}
 </style>
