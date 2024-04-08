@@ -23,7 +23,7 @@ const _sfc_main = {
         }
         if (result == 0) {
           const WxOpenId = this.WxOpenId;
-          common_vendor.index.switchTab({
+          common_vendor.index.reLaunch({
             url: "/pages/homepage/homepage",
             success() {
               common_vendor.index.$emit("LoginID", WxOpenId);
@@ -61,7 +61,7 @@ const _sfc_main = {
         success: (res) => {
           console.log("登录成功，code:", res.rawData);
           console.log("userinfo:", res.userInfo);
-          common_vendor.index.switchTab({
+          common_vendor.index.reLaunch({
             url: "/pages/homepage/homepage"
           });
         },

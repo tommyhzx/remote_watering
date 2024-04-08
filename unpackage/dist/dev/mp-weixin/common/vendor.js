@@ -6816,31 +6816,6 @@ const pages = [
     }
   }
 ];
-const tabBar = {
-  backgroundColor: "#fff",
-  color: "#D2E3F5",
-  selectedColor: "#D2E3F5",
-  list: [
-    {
-      text: "首页",
-      pagePath: "pages/homepage/homepage",
-      iconPath: "static/icon/home.png",
-      selectedIconPath: "static/icon/home_select.png"
-    },
-    {
-      text: "设备",
-      pagePath: "pages/index/index",
-      iconPath: "static/icon/device.png",
-      selectedIconPath: "static/icon/device_select.png"
-    },
-    {
-      text: "我的",
-      pagePath: "pages/about/about",
-      iconPath: "static/icon/about.png",
-      selectedIconPath: "static/icon/about_select.png"
-    }
-  ]
-};
 const globalStyle = {
   navigationBarTextStyle: "black",
   navigationBarTitleText: "uni-app",
@@ -6854,7 +6829,6 @@ const usingComponents = {
 };
 const e = {
   pages,
-  tabBar,
   globalStyle,
   uniIdRouter,
   usingComponents

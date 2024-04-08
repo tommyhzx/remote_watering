@@ -47,7 +47,7 @@
 					//若没有出异常，进入首页
 					if(result == 0){
 						const WxOpenId = this.WxOpenId;
-						uni.switchTab({
+						uni.reLaunch({
 						 	url:'/pages/homepage/homepage',
 							success(){
 								uni.$emit("LoginID",WxOpenId);
@@ -87,7 +87,7 @@
 					success: res => {
 						console.log('登录成功，code:',res.rawData);
 						console.log('userinfo:',res.userInfo);
-						uni.switchTab({
+						uni.reLaunch({
 						 	url:'/pages/homepage/homepage'
 						 });
 					},
