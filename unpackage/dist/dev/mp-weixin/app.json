@@ -3,7 +3,8 @@
     "pages/login/login",
     "pages/index/index",
     "pages/homepage/homepage",
-    "pages/about/about"
+    "pages/about/about",
+    "pages/addDevice/addDevice"
   ],
   "window": {
     "navigationBarTextStyle": "black",

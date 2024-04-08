@@ -1,8 +1,9 @@
 {
   "navigationBarTitleText": "首页",
   "enablePullDownRefresh": false,
+  "navigationBarBackgroundColor": "#FFE100",
+  "navigationBarTitleImage": "/static/pic/yumiLogo.png",
   "usingComponents": {
-    "input-modal": "../../components/CustomModal/InputModal",
     "device-card": "../../components/CustomModal/DeviceCard"
   }
 }

@@ -1,6 +1,17 @@
 <template>
+	<view class="imgContainer">
+		<view class="spacer"></view> <!-- 上方间隔 -->
+		<image class="logo" src="/static/pic/yumiLogo.png" mode="widthFix"/>
+		<view class="spacer-buttom"></view> <!-- 下方间隔 -->
+		<image class="background" src="/static/pic/background.png" mode="widthFix"/>
+		<view class="text">登录即可控制智能设备</view>
+		<view class="text">畅享生活</view>
+		<view class="text">Login to control smart device</view>
+		<view class="text">and enjoy your life</view>
+		<view class="spacer-end"></view> <!-- 下方间隔 -->		
+	</view>
 	<view>
-		<button @click="userLogin">微信登录</button>
+		<button class="login_btn" @click="userLogin">立即微信登录<br>Login</button>
 	</view>
 </template>
 
@@ -35,8 +46,13 @@
 					//this.userLogin();
 					//若没有出异常，进入首页
 					if(result == 0){
+						const WxOpenId = this.WxOpenId;
 						uni.switchTab({
-						 	url:'/pages/homepage/homepage'
+						 	url:'/pages/homepage/homepage',
+							success(){
+								uni.$emit("LoginID",WxOpenId);
+								console.log("登录信息");
+							}
 						 });
 					}else{
 						uni.showToast({
@@ -44,7 +60,6 @@
 							image:"/static/logo.png"
 						});
 					}
-					
 				});
 				
 				
@@ -109,5 +124,35 @@
 </script>
 
 <style lang="scss">
+	.imgContainer{
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+		justify-content: center;
+		.spacer {
+		    height: 100rpx; /* 上下间隔的高度 */
+		}
+		.logo{
+			width: 300rpx;
+		}
+		.background{
+			width:400rpx
+		}
+		.spacer-end{
+			height: 100rpx;
+		}
+		.text{
+			font-size: 14px;
+		}
+	}
+	.login_btn{
+		width: 500rpx;
+		height: auto;
+		padding: 10px;
+		background-color: #FFE100;
+		border-radius: 15px;
+		font-size: 14px;
+		line-height: 1;
+	}
 
 </style>

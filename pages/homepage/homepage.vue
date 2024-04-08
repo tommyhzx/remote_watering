@@ -1,15 +1,24 @@
 <template>
-	<view>		
+	<view class="containor">	
+		<view class="header">
+			<image class="logo" src="/static/homepage/add_pic.png" @click="addDevice" mode="heightFix"/>
+		    <image class="avatar" src="/static/pic/avatar.png" />
+		</view>
+
 		<swiper class="swiper" interval="interval" indicator-dots="true" 
 		circular="true">
-		
+			<!-- 遍历用户下的设备 -->
 			<swiper-item v-for="(device, index) in devices" :key="index">
-			<!-- <swiper-item>	 -->
 				<DeviceCard :device="device">123</DeviceCard>
 			</swiper-item>
+			<!-- 若用户当前没有设备，则显示添加设备按钮 -->
+			<swiper-item class="add-device-btn-containor" v-if="showAddDeviceBtn">
+				<view  class="add-device-btn">
+					<image src="../../static/homepage/add-btn.png" @click="addDevice" mode="scaleToFill"></image>
+				</view>
+			</swiper-item>		
 		</swiper>
-		<button @click="addDevice">添加设备</button>
-		<InputModal :visible= "modalVisible" @confirm="onConfirm" @cancel="onCancel" ></InputModal>
+		<!-- <InputModal :visible= "modalVisible" @confirm="onConfirm" @cancel="onCancel" ></InputModal> -->
 	</view>
 </template>
 
@@ -31,45 +40,124 @@
 					devicePlace:"设备位置",
 				},
 				devices:[],
+				showAddDeviceBtn: true, // 若swiper没有设备，则添加一个按钮
+				User:'',
 			};
 		},
-		methods:{
-			addDevice(){
-				this.modalVisible = true;
-				
-			},
-			onConfirm(device){
-				this.modalVisible = false;			
-				if(device == ''){
-					uni.showToast({
-						title:"设备号不能为空"
-					})
-					return;
-				}
-				if(this.deviceSN.includes(device)){
+		computed:{
+			showAddDeviceBtn() {
+			    return this.devices.length === 0;
+			  }
+		},
+		onReady(){
+			
+		},
+		onLoad(option) {
+			uni.$on('formConfirm', (deviceData) => {
+				console.log('监听到事件来自 update ，携带参数 msg 为：' + deviceData.deviceSN);
+				if(this.deviceSN.includes(deviceData.deviceSN)){
 					uni.showToast({
 						title:"设备已存在"
 					})
 				}else{
 					this.devices.push({
-						deviceSN:device.deviceSN,
-						deviceName:device.deviceName,
-						devicePlace:device.devicePlace
-					})
+						deviceSN:deviceData.deviceSN,
+						deviceName:deviceData.deviceName,
+						devicePlace:deviceData.devicePlace
+					});
+					this.deviceSN.push(deviceData.deviceSN)
 				}
+				const device = {
+					deviceSN:deviceData.deviceSN,
+					deviceName:deviceData.deviceName,
+					devicePlace:deviceData.devicePlace,
+					deviceUser:this.User,
+				}
+				uniCloud.callFunction({
+					name:"creatDevice",
+					data:{
+						device : device
+					}
+				}).then(res => {
+					if(res.result.code != 0){
+						console.log("creatDevice Fail，",res.result.msg);
+					}				
+				});
+			});
+			uni.$on('LoginID', (deviceData) => {
+				console.log('监听到事件来自 update ，LoginID 为：' + deviceData);
+				this.User = deviceData;
+				//获取当前用户保存在数据库里的设备信息
+				uniCloud.callFunction({
+					name:"getUserDevices",
+					data:{
+						deviceUser : deviceData
+					}
+				}).then(res => {					
+					if(res.result.code == 0){
+						console.log("查询用户设备为：",res);
+						this.devices = res.result.data;
+					}
+				})
+			});
+		},
+		onUnload() {  
+		    // 移除监听事件  
+		        uni.$off('formConfirm');  
+		    },
+		methods:{
+			addDevice(){
+				uni.navigateTo({
+				        url: '/pages/addDevice/addDevice' // 跳转到添加设备页
+				});
+				// this.modalVisible = true;
 				
 			},
-			onCancel(){
-				this.modalVisible = false;
-			}
 		}
 	}
 </script>
 
 <style lang="scss">
-	.swiper{
+	.header{
 		display: flex;
+		flex-direction: row;
+		justify-content: space-around;
 		align-items: center;
-		height: 1000rpx;
+		background-color: #FFE100;
+		width: 750rpx;
+		.avatar{
+			max-width: 100rpx;
+			max-height: 100rpx;
+		}
+		.logo{
+			max-height: 70rpx;
+		}
 	}
+	.containor{
+		display: flex;
+		flex-direction: column;
+		align-items: center;	
+		background-color: #FFE100;
+		.swiper{
+			display: flex;
+			align-items: center;
+			height: 1000rpx;
+			width: 750rpx;
+			margin-top: 30rpx;
+			background-color: white;
+			border-radius: 30rpx;
+			.add-device-btn-containor{
+				display: flex;
+				justify-content: center;
+				align-items: center;
+				.add-device-btn image{
+					display: flex;
+					align-items: center;
+					width: 100rpx;
+					max-height: 100rpx;
+				}
+			}
+		}
+	}
+	
 </style>

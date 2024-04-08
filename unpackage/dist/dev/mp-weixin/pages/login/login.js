@@ -22,8 +22,13 @@ const _sfc_main = {
           console.log("用户已存在", res);
         }
         if (result == 0) {
+          const WxOpenId = this.WxOpenId;
           common_vendor.index.switchTab({
-            url: "/pages/homepage/homepage"
+            url: "/pages/homepage/homepage",
+            success() {
+              common_vendor.index.$emit("LoginID", WxOpenId);
+              console.log("登录信息");
+            }
           });
         } else {
           common_vendor.index.showToast({

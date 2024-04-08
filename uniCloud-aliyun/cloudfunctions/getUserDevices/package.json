@@ -1,0 +1,7 @@
+{
+  "name": "getUserDevices",
+  "dependencies": {},
+  "extensions": {
+    "uni-cloud-jql": {}
+  }
+}

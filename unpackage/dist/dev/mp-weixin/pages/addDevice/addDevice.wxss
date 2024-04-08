@@ -23,58 +23,44 @@
 /* 垂直间距 */
 /* 透明度 */
 /* 文章场景相关 */
-.container {
+.overlay {
   display: flex;
   flex-direction: column;
-}
-.container .title {
-  display: flex;
   align-items: center;
-  margin: 40rpx;
 }
-.container .title text {
-  font-size: 15px;
-  color: gray;
-}
-.container .avatar {
+.imagecontainer {
   display: flex;
-  flex-direction: row;
-  justify-content: space-between;
+  justify-content: center;
   align-items: center;
-  margin: 40rpx;
+  padding: 50px;
 }
-.container .avatar .avatartext {
-  flex: 1;
+.imagecontainer .device-pic {
+  width: 200rpx;
+  padding-right: 50rpx;
 }
-.container .avatar .avatarbtn {
-  width: 100rpx;
-  height: 100rpx;
-  padding: 0;
-  /* 清除按钮默认的内边距 */
+.input-modal {
+  width: 500rpx;
+  font-size: 14px;
 }
-.container .avatar .avatarbtn .avatarImage {
-  width: 100%;
-  height: 100%;
+.input-modal .input-text {
+  border: 1px solid #bfbfbf;
+  /* Add border */
+  border-radius: 5px;
+  padding: 1px;
+  margin-bottom: 20px;
+  height: 80rpx;
 }
-.container .account {
-  display: flex;
-  justify-content: space-between;
-  margin: 40rpx;
-}
-.container .name-container {
-  display: flex;
-  justify-content: space-between;
-  padding: 40rpx;
-}
-.container .name-container .nameText {
-  flex: 1;
-}
-.container .name-container .name-input {
+.input-modal .button-ok {
   width: 300rpx;
-  text-align: right;
+  font-size: 14px;
+  margin-bottom: 5px;
+  border-radius: 10px;
+  background-color: #FFE100;
 }
-.container .logoutbtn {
-  border-radius: 40rpx;
-  border: #000000;
-  color: firebrick;
+.input-modal .button-cancel {
+  width: 300rpx;
+  font-size: 14px;
+  margin-bottom: 5px;
+  border-radius: 10px;
+  background-color: #BFBFBF;
 }

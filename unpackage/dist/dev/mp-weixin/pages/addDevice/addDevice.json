@@ -1,7 +1,6 @@
 {
-  "navigationBarTitleText": "登录页面",
+  "navigationBarTitleText": "",
   "enablePullDownRefresh": false,
   "navigationBarBackgroundColor": "#FFE100",
-  "navigationBarTitleImage": "/static/pic/yumiLogo.png",
   "usingComponents": {}
 }
