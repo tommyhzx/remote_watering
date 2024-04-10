@@ -30,8 +30,7 @@ const _sfc_main = {
   onReady() {
   },
   onLoad(option) {
-    common_vendor.index.$on("formConfirm", (deviceData) => {
-      console.log("监听到事件来自 update ，携带参数 msg 为：" + deviceData.deviceSN);
+    common_vendor.index.$on("addDevice", (deviceData) => {
       if (this.deviceSN.includes(deviceData.deviceSN)) {
         common_vendor.index.showToast({
           title: "设备已存在"
@@ -76,6 +75,12 @@ const _sfc_main = {
         }
       });
     });
+    common_vendor.index.$on("deleteDevice", (deviceSN) => {
+      console.log("删除设备列表", deviceSN);
+      const deleteDeviceSN = deviceSN;
+      const filteredDevices = this.devices.filter((device) => device.deviceSN !== deleteDeviceSN);
+      this.devices = filteredDevices;
+    });
   },
   onUnload() {
     common_vendor.index.$off("formConfirm");
@@ -84,6 +89,12 @@ const _sfc_main = {
     addDevice() {
       common_vendor.index.navigateTo({
         url: "/pages/addDevice/addDevice"
+        // 跳转到添加设备页
+      });
+    },
+    gotoAbout() {
+      common_vendor.index.navigateTo({
+        url: "/pages/about/about"
         // 跳转到添加设备页
       });
     }
@@ -96,7 +107,8 @@ if (!Array) {
 function _sfc_render(_ctx, _cache, $props, $setup, $data, $options) {
   return common_vendor.e({
     a: common_vendor.o((...args) => $options.addDevice && $options.addDevice(...args)),
-    b: common_vendor.f($data.devices, (device, index, i0) => {
+    b: common_vendor.o((...args) => $options.gotoAbout && $options.gotoAbout(...args)),
+    c: common_vendor.f($data.devices, (device, index, i0) => {
       return {
         a: "27eb7476-0-" + i0,
         b: common_vendor.p({
@@ -105,9 +117,9 @@ function _sfc_render(_ctx, _cache, $props, $setup, $data, $options) {
         c: index
       };
     }),
-    c: $options.showAddDeviceBtn
+    d: $options.showAddDeviceBtn
   }, $options.showAddDeviceBtn ? {
-    d: common_vendor.o((...args) => $options.addDevice && $options.addDevice(...args))
+    e: common_vendor.o((...args) => $options.addDevice && $options.addDevice(...args))
   } : {});
 }
 const MiniProgramPage = /* @__PURE__ */ common_vendor._export_sfc(_sfc_main, [["render", _sfc_render], ["__file", "/Users/tommybei/software/code_project/uniapp_project/warteringCloud/pages/homepage/homepage.vue"]]);

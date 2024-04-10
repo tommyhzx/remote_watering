@@ -2,7 +2,7 @@
 	<view class="containor">	
 		<view class="header">
 			<image class="logo" src="/static/homepage/add_pic.png" @click="addDevice" mode="heightFix"/>
-		    <image class="avatar" src="/static/pic/avatar.png" />
+		    <image class="avatar" src="/static/pic/avatar.png" @click="gotoAbout"/>
 		</view>
 
 		<swiper class="swiper" interval="interval" indicator-dots="true" 
@@ -53,8 +53,7 @@
 			
 		},
 		onLoad(option) {
-			uni.$on('formConfirm', (deviceData) => {
-				console.log('监听到事件来自 update ，携带参数 msg 为：' + deviceData.deviceSN);
+			uni.$on('addDevice', (deviceData) => {
 				if(this.deviceSN.includes(deviceData.deviceSN)){
 					uni.showToast({
 						title:"设备已存在"
@@ -84,6 +83,7 @@
 					}				
 				});
 			});
+			//登录后，传入wxID，从数据库获取用户的设备列表
 			uni.$on('LoginID', (deviceData) => {
 				console.log('监听到事件来自 update ，LoginID 为：' + deviceData);
 				this.User = deviceData;
@@ -100,6 +100,14 @@
 					}
 				})
 			});
+			
+			uni.$on('deleteDevice', (deviceSN) => {
+				console.log("删除设备列表",deviceSN);
+				const deleteDeviceSN = deviceSN;
+				const filteredDevices = this.devices.filter(device => device.deviceSN !== deleteDeviceSN);
+				this.devices = filteredDevices;
+
+			});
 		},
 		onUnload() {  
 		    // 移除监听事件  
@@ -113,6 +121,11 @@
 				// this.modalVisible = true;
 				
 			},
+			gotoAbout(){
+				uni.navigateTo({
+				        url: '/pages/about/about' // 跳转到添加设备页
+				});
+			}
 		}
 	}
 </script>
@@ -141,11 +154,11 @@
 		.swiper{
 			display: flex;
 			align-items: center;
-			height: 1000rpx;
+			height: 1050rpx;
 			width: 750rpx;
 			margin-top: 30rpx;
 			background-color: white;
-			border-radius: 30rpx;
+			border-radius: 0rpx;
 			.add-device-btn-containor{
 				display: flex;
 				justify-content: center;

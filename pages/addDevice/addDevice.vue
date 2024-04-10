@@ -48,7 +48,7 @@
 				uni.navigateBack({
 					delta: 1 ,// 返回上一级页面
 					success() {
-						uni.$emit("formConfirm",deviceData);
+						uni.$emit("addDevice",deviceData);
 
 					}
 				});

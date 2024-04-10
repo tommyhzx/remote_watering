@@ -25,7 +25,7 @@ const _sfc_main = {
         delta: 1,
         // 返回上一级页面
         success() {
-          common_vendor.index.$emit("formConfirm", deviceData);
+          common_vendor.index.$emit("addDevice", deviceData);
         }
       });
     },

@@ -23,53 +23,57 @@
 /* 垂直间距 */
 /* 透明度 */
 /* 文章场景相关 */
-.deviceInfo {
+.containor {
+  background-color: #ffffff;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+.containor .deviceInfo {
   display: flex;
   flex-direction: column;
   justify-content: space-around;
   align-items: center;
-  margin: 50rpx;
+  margin: 30rpx;
 }
-.deviceInfo .device-pic {
+.containor .deviceInfo .device-pic {
   max-width: 250rpx;
   max-height: 250rpx;
   margin: 30rpx;
 }
-.deviceInfo .device-text {
+.containor .deviceInfo .device-text {
   margin: 20rpx;
   font-size: 20px;
 }
-.deviceInfo .device-place {
+.containor .deviceInfo .device-place {
   font-size: 15px;
   color: grey;
 }
-.wifi-containor {
-  display: flex;
-  justify-content: center;
+.containor .wifi-containor {
   margin: 30rpx;
 }
-.wifi-containor .wifi {
+.containor .wifi-containor .wifi {
   display: flex;
   flex-direction: row;
   align-items: center;
 }
-.wifi-containor .wifi .wifi-logo {
+.containor .wifi-containor .wifi .wifi-logo {
   max-width: 100rpx;
   max-height: 100rpx;
   margin: 20rpx;
 }
-.wifi-containor .wifi .wifi-text {
+.containor .wifi-containor .wifi .wifi-text {
   font-size: 20px;
 }
-.button-containor {
-  display: flex;
-  justify-content: center;
-}
-.button-containor .pic-button {
+.containor .button-containor .pic-button {
   display: flex;
   align-items: center;
 }
-.button-containor .pic-button .col2Image {
+.containor .button-containor .pic-button .col2Image {
   max-width: 200rpx;
   max-height: 200rpx;
+}
+.containor .delete-pic {
+  height: 50rpx;
+  margin-top: 30rpx;
 }
