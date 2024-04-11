@@ -111,7 +111,7 @@
 		},
 		onUnload() {  
 		    // 移除监听事件  
-		        uni.$off('formConfirm');  
+		        uni.$off('addDevice');  
 		    },
 		methods:{
 			addDevice(){

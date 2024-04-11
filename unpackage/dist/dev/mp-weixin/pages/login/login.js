@@ -3,57 +3,93 @@ const common_vendor = require("../../common/vendor.js");
 const _sfc_main = {
   data() {
     return {
-      WxOpenId: "Wx19990000"
+      WxOpenId: ""
     };
   },
   methods: {
-    userLogin() {
-      let result = 0;
-      common_vendor.Ws.callFunction({
+    async userLogin() {
+      try {
+        const code = await this.getWxCode();
+        const openID = await this.getWxOpneId(code);
+        const userExists = await this.checkUser(openID);
+        if (!userExists) {
+          await this.createUser(openID);
+        }
+        common_vendor.index.reLaunch({
+          url: "/pages/homepage/homepage",
+          success() {
+            common_vendor.index.$emit("LoginID", openID);
+            console.log("登录信息");
+          }
+        });
+      } catch (error) {
+        console.error("登录失败：", error);
+        common_vendor.index.showToast({
+          title: "登录异常，请重试",
+          image: "/static/logo.png"
+        });
+      }
+    },
+    //获取微信code，同时获取OpenID
+    async getWxCode() {
+      const res = await common_vendor.index.login({
+        provider: "weixin"
+      });
+      if (res.code) {
+        console.log("用户code：", res.code);
+        return res.code;
+      } else {
+        console.log("登录失败！" + res.errMsg);
+        throw new Error("获取用户 code 失败");
+      }
+    },
+    //获取微信用户OpenID
+    async getWxOpneId(code) {
+      console.log("getWxOpneId，code is", code);
+      const res = await common_vendor.index.request({
+        url: "https://api.weixin.qq.com/sns/jscode2session",
+        method: "GET",
+        data: {
+          appid: "wx5d6f4dcf7b16e780",
+          secret: "3accced62f38bf7fc1f2036484a578ae",
+          js_code: code,
+          grant_type: "authorization_code"
+        }
+      });
+      if (!res.data.openid) {
+        throw new Error("获取用户 OpenID 失败");
+      }
+      console.log("用户的 OpenID：", res.data.openid);
+      return res.data.openid;
+    },
+    //查询数据库是否存在用户
+    async checkUser(openid) {
+      const res = await common_vendor.Ws.callFunction({
         name: "checkUserById",
         data: {
-          WxOpenId: this.WxOpenId
-        }
-      }).then((res) => {
-        if (res.result.code == 0) {
-          console.log("用户不存在", res);
-          result = this.addUser(this.WxOpenId);
-        } else {
-          console.log("用户已存在", res);
-        }
-        if (result == 0) {
-          const WxOpenId = this.WxOpenId;
-          common_vendor.index.reLaunch({
-            url: "/pages/homepage/homepage",
-            success() {
-              common_vendor.index.$emit("LoginID", WxOpenId);
-              console.log("登录信息");
-            }
-          });
-        } else {
-          common_vendor.index.showToast({
-            title: "登录异常，请重试",
-            image: "/static/logo.png"
-          });
+          WxOpenId: openid
         }
       });
+      if (res.result.code == 0) {
+        return false;
+      } else {
+        return true;
+      }
     },
-    addUser(id) {
-      common_vendor.Ws.callFunction({
+    //在数据库创建新用户
+    async createUser(openid) {
+      const res = await common_vendor.Ws.callFunction({
         name: "createUser",
         data: {
-          WxOpenId: this.WxOpenId
-        }
-      }).then((res) => {
-        if (res.result.code == 0) {
-          console.log("用户添加成功 res=", res);
-          return 0;
-        } else {
-          console.log("用户添加失败 res=", res);
-          return -1;
+          WxOpenId: openid
         }
       });
+      if (res.result.code !== 0) {
+        throw new Error("用户添加失败");
+      }
+      console.log("数据库添加用户成功 res=", res);
     },
+    //函数暂时无效
     userProfile() {
       common_vendor.index.getUserProfile({
         provider: "weixin",
@@ -76,22 +112,6 @@ const _sfc_main = {
   },
   onLoad() {
     console.log("onLoad");
-    common_vendor.index.login({
-      "provider": "weixin",
-      "onlyAuthorize": true,
-      // 微信登录仅请求授权认证
-      success: (res) => {
-        if (res.code) {
-          console.log("登录成功，code:", res.code);
-          this.WxOpenId = "88888888";
-        } else {
-          console.log("登录失败：", err);
-        }
-      },
-      fail: (res) => {
-        console.log("login fail：", res);
-      }
-    });
   }
 };
 function _sfc_render(_ctx, _cache, $props, $setup, $data, $options) {

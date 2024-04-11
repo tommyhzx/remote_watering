@@ -83,7 +83,7 @@ const _sfc_main = {
     });
   },
   onUnload() {
-    common_vendor.index.$off("formConfirm");
+    common_vendor.index.$off("addDevice");
   },
   methods: {
     addDevice() {

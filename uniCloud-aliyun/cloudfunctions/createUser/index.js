@@ -9,8 +9,9 @@ exports.main = async (event, context) => {
 			const res = await db.collection('usersWx').add({
 				WxOpenId: WxOpenId,
 				// 这里可以添加其他需要保存的字段
-				username: "新用户22",
-				userTel: "1313131313"
+				username: "微信用户",
+				userTel: "",
+				userAvater: "",
 			})
 	        
 	    } catch (err) {
