@@ -2,7 +2,7 @@
 	<view class="containor">	
 		<view class="header">
 			<image class="logo" src="/static/homepage/add_pic.png" @click="addDevice" mode="heightFix"/>
-		    <image class="avatar" src="/static/pic/avatar.png" @click="gotoAbout"/>
+		    <image class="avatar" :src='avatarUrl' @click="gotoAbout"/>
 		</view>
 
 		<swiper class="swiper" interval="interval" indicator-dots="true" 
@@ -30,6 +30,9 @@
 			InputModal,
 			DeviceCard,
 		},
+		props:{
+			
+		},
 		data() {
 			return {
 				modalVisible: false,
@@ -42,12 +45,13 @@
 				devices:[],
 				showAddDeviceBtn: true, // 若swiper没有设备，则添加一个按钮
 				User:'',
+				avatarUrl: getApp().globalData.userAvater // 存储用户头像地址
 			};
 		},
 		computed:{
 			showAddDeviceBtn() {
 			    return this.devices.length === 0;
-			  }
+			},
 		},
 		onReady(){
 			
@@ -107,6 +111,12 @@
 				const filteredDevices = this.devices.filter(device => device.deviceSN !== deleteDeviceSN);
 				this.devices = filteredDevices;
 
+			});
+			
+			// 保存个人信息后触发
+			uni.$on('saveUserInfo', (userData) => {
+			        // 全局变量变化时，重新赋值给计算属性
+			        this.avatarUrl = userData.userAvater;
 			});
 		},
 		onUnload() {  

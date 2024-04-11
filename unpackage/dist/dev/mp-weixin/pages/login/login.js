@@ -15,6 +15,10 @@ const _sfc_main = {
         if (!userExists) {
           await this.createUser(openID);
         }
+        getApp().globalData.WxOpenId = openID;
+        getApp().globalData.username = "微信用户";
+        getApp().globalData.userAvater = "../../static/pic/avatar.png";
+        getApp().globalData.userTel = "13811999999";
         common_vendor.index.reLaunch({
           url: "/pages/homepage/homepage",
           success() {

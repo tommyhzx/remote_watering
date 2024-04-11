@@ -9,6 +9,16 @@ if (!Math) {
   "./pages/addDevice/addDevice.js";
 }
 const _sfc_main = {
+  data() {
+    return {
+      globalData: {
+        WxOpenId: "",
+        username: "",
+        userAvater: "",
+        userTel: ""
+      }
+    };
+  },
   onLaunch: function() {
     console.log("App Launch");
   },

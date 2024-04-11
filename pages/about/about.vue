@@ -7,7 +7,7 @@
 		<view class="avatar">
 			<text class="avatartext">头像</text>
 			<button class = "avatarbtn" type="balanced" open-type="chooseAvatar" @chooseavatar="onChooseavatar">
-				<image :src="avatarUrl" class="avatarImage"></image>
+				<image :src="userInfo.avatarUrl" class="avatarImage"></image>
 			</button>
 			<!-- <image src="../../static/pic/defaultAvatar.png"></image> -->
 		</view>
@@ -17,8 +17,12 @@
 		</view>
 		<view class="name-container">
 			<text class="nameText">姓名</text>
-			<input :clearable="false" type="nickname" class="name-input" :value="userName" @blur="bindblur"
-				placeholder="请输入昵称" @input="bindinput" />
+			<input ref='inputRef' :clearable="false" type="nickname" class="name-input" :value="userInfo.userName" @blur="bindblur"
+				placeholder="请输入昵称" @input="changeName" />
+		</view>
+		<view>
+			<button class='save' @click="save">保存</button>
+			<button class='cancel' @click="cancel">取消</button>
 		</view>
 		<button class="logoutbtn" @click="userLogout">退出登录</button>
 	</view>
@@ -28,7 +32,12 @@
 	export default {
 		data() {
 			return {
-				avatarUrl: '../../static/pic/defaultAvatar.png'
+				avatarUrl: getApp().globalData.userAvater,
+				userName: getApp().globalData.username,
+				userInfo: {
+					avatarUrl: getApp().globalData.userAvater,
+					userName: getApp().globalData.username
+				},
 			};
 		},
 		methods:{
@@ -42,8 +51,31 @@
 				let {
 					avatarUrl
 				} = e.detail;
-				this.avatarUrl = avatarUrl
+				this.userInfo.avatarUrl = avatarUrl;
 			},
+			changeName(event){
+				this.userInfo.userName = event.target.value;
+			},
+			bindblur(event){
+				this.userInfo.userName = event.target.value;
+			},
+			save(){
+				// 修改全局变量的地方
+				getApp().globalData.userAvater = this.userInfo.avatarUrl;
+				getApp().globalData.username = this.userInfo.userName;
+				uni.$emit('saveUserInfo', this.userInfo);
+				console.log("save:",this.userInfo);
+				uni.navigateTo({
+				 	url:'/pages/homepage/homepage'
+				});
+			},
+			cancel(){
+				this.userInfo.avatarUrl = getApp().globalData.userAvater;
+				this.userInfo.userName = getApp().globalData.username;
+				uni.navigateTo({
+				 	url:'/pages/homepage/homepage'
+				});
+			}
 		}
 	}
 </script>

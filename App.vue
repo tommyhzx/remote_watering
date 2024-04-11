@@ -1,5 +1,15 @@
 <script>
 	export default {
+		data(){
+			return{
+				globalData:{
+						WxOpenId:'',
+						username:'',
+						userAvater:'',
+						userTel:'',
+				}
+			};
+		},
 		onLaunch: function() {
 			console.log('App Launch')
 		},

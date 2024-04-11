@@ -7,6 +7,7 @@ const _sfc_main = {
     InputModal,
     DeviceCard
   },
+  props: {},
   data() {
     return {
       modalVisible: false,
@@ -19,7 +20,9 @@ const _sfc_main = {
       devices: [],
       showAddDeviceBtn: true,
       // 若swiper没有设备，则添加一个按钮
-      User: ""
+      User: "",
+      avatarUrl: getApp().globalData.userAvater
+      // 存储用户头像地址
     };
   },
   computed: {
@@ -81,6 +84,9 @@ const _sfc_main = {
       const filteredDevices = this.devices.filter((device) => device.deviceSN !== deleteDeviceSN);
       this.devices = filteredDevices;
     });
+    common_vendor.index.$on("saveUserInfo", (userData) => {
+      this.avatarUrl = userData.userAvater;
+    });
   },
   onUnload() {
     common_vendor.index.$off("addDevice");
@@ -107,8 +113,9 @@ if (!Array) {
 function _sfc_render(_ctx, _cache, $props, $setup, $data, $options) {
   return common_vendor.e({
     a: common_vendor.o((...args) => $options.addDevice && $options.addDevice(...args)),
-    b: common_vendor.o((...args) => $options.gotoAbout && $options.gotoAbout(...args)),
-    c: common_vendor.f($data.devices, (device, index, i0) => {
+    b: $data.avatarUrl,
+    c: common_vendor.o((...args) => $options.gotoAbout && $options.gotoAbout(...args)),
+    d: common_vendor.f($data.devices, (device, index, i0) => {
       return {
         a: "27eb7476-0-" + i0,
         b: common_vendor.p({
@@ -117,9 +124,9 @@ function _sfc_render(_ctx, _cache, $props, $setup, $data, $options) {
         c: index
       };
     }),
-    d: $options.showAddDeviceBtn
+    e: $options.showAddDeviceBtn
   }, $options.showAddDeviceBtn ? {
-    e: common_vendor.o((...args) => $options.addDevice && $options.addDevice(...args))
+    f: common_vendor.o((...args) => $options.addDevice && $options.addDevice(...args))
   } : {});
 }
 const MiniProgramPage = /* @__PURE__ */ common_vendor._export_sfc(_sfc_main, [["render", _sfc_render], ["__file", "/Users/tommybei/software/code_project/uniapp_project/warteringCloud/pages/homepage/homepage.vue"]]);
