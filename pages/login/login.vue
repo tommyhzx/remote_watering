@@ -36,12 +36,25 @@
 					    // 用户不存在，添加用户到数据库
 					    await this.createUser(openID);
 					}
+					try {
+						const res = await uniCloud.callFunction({
+							name:'getUserInfo',
+							data:{
+								WxOpenId:openID,
+							},
+						});
+						console.log('获取用户信息：', res.result.data);
+						const userInfo = res.result.data;
 						//获取用户信息，并置全局变量
 						getApp().globalData.WxOpenId = openID;
-						getApp().globalData.username = '微信用户';
-						getApp().globalData.userAvater = '../../static/pic/avatar.png';
-						getApp().globalData.userTel = '13811999999';	
-											
+						getApp().globalData.username = userInfo.username;
+						getApp().globalData.userAvater = userInfo.userAvater;
+						getApp().globalData.userTel = userInfo.userTel;	
+						
+					}catch(err){
+						console.error('获取用户信息失败：', err);
+					}
+
 					// 跳转到首页
 					uni.reLaunch({
 					    url: '/pages/homepage/homepage',

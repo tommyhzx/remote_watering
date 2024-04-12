@@ -15,10 +15,22 @@ const _sfc_main = {
         if (!userExists) {
           await this.createUser(openID);
         }
-        getApp().globalData.WxOpenId = openID;
-        getApp().globalData.username = "微信用户";
-        getApp().globalData.userAvater = "../../static/pic/avatar.png";
-        getApp().globalData.userTel = "13811999999";
+        try {
+          const res = await common_vendor.Ws.callFunction({
+            name: "getUserInfo",
+            data: {
+              WxOpenId: openID
+            }
+          });
+          console.log("获取用户信息：", res.result.data);
+          const userInfo = res.result.data;
+          getApp().globalData.WxOpenId = openID;
+          getApp().globalData.username = userInfo.username;
+          getApp().globalData.userAvater = userInfo.userAvater;
+          getApp().globalData.userTel = userInfo.userTel;
+        } catch (err) {
+          console.error("获取用户信息失败：", err);
+        }
         common_vendor.index.reLaunch({
           url: "/pages/homepage/homepage",
           success() {

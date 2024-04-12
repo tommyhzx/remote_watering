@@ -3,8 +3,6 @@ const common_vendor = require("../../common/vendor.js");
 const _sfc_main = {
   data() {
     return {
-      avatarUrl: getApp().globalData.userAvater,
-      userName: getApp().globalData.username,
       userInfo: {
         avatarUrl: getApp().globalData.userAvater,
         userName: getApp().globalData.username

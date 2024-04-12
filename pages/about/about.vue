@@ -32,8 +32,6 @@
 	export default {
 		data() {
 			return {
-				avatarUrl: getApp().globalData.userAvater,
-				userName: getApp().globalData.username,
 				userInfo: {
 					avatarUrl: getApp().globalData.userAvater,
 					userName: getApp().globalData.username
