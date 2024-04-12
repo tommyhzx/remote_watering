@@ -64,10 +64,24 @@
 				getApp().globalData.userAvater = this.userInfo.avatarUrl;
 				getApp().globalData.username = this.userInfo.userName;
 				uni.$emit('saveUserInfo', this.userInfo);
-				console.log("save:",this.userInfo);
-				uni.navigateTo({
-				 	url:'/pages/homepage/homepage'
+				console.log("WxOpenId:",getApp().globalData.WxOpenId);
+				//保存数据库
+				uniCloud.callFunction({
+					name:"saveUserInfo",
+					data:{
+						WxOpenId : getApp().globalData.WxOpenId,
+						username : getApp().globalData.username,
+						userAvater : getApp().globalData.userAvater,
+					}
+				}).then(res => {
+					console.log("saveUserInfo log，",res.result.msg);
+					if(res.result.code != 0){
+						console.log("saveUserInfo Fail，",res.result.msg);
+					}				
 				});
+				// uni.navigateTo({
+				//  	url:'/pages/homepage/homepage'
+				// });
 			},
 			cancel(){
 				this.userInfo.avatarUrl = getApp().globalData.userAvater;
