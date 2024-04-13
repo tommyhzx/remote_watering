@@ -21,7 +21,7 @@ const _sfc_main = {
       showAddDeviceBtn: true,
       // 若swiper没有设备，则添加一个按钮
       User: "",
-      avatarUrl: getApp().globalData.userAvater
+      avatarUrl: getApp().globalData.userAvater || "/static/pic/defaultAvatar.png"
       // 存储用户头像地址
     };
   },
@@ -39,29 +39,33 @@ const _sfc_main = {
           title: "设备已存在"
         });
       } else {
-        this.devices.push({
+        const device = {
           deviceSN: deviceData.deviceSN,
           deviceName: deviceData.deviceName,
-          devicePlace: deviceData.devicePlace
+          devicePlace: deviceData.devicePlace,
+          deviceUser: this.User
+        };
+        common_vendor.Ws.callFunction({
+          name: "creatDevice",
+          data: {
+            device
+          }
+        }).then((res) => {
+          if (res.result.code == 0) {
+            this.devices.push({
+              deviceSN: deviceData.deviceSN,
+              deviceName: deviceData.deviceName,
+              devicePlace: deviceData.devicePlace
+            });
+            this.deviceSN.push(deviceData.deviceSN);
+          } else {
+            console.log("creatDevice Fail，", res.result.msg);
+            common_vendor.index.showToast({
+              title: res.result.msg
+            });
+          }
         });
-        this.deviceSN.push(deviceData.deviceSN);
       }
-      const device = {
-        deviceSN: deviceData.deviceSN,
-        deviceName: deviceData.deviceName,
-        devicePlace: deviceData.devicePlace,
-        deviceUser: this.User
-      };
-      common_vendor.Ws.callFunction({
-        name: "creatDevice",
-        data: {
-          device
-        }
-      }).then((res) => {
-        if (res.result.code != 0) {
-          console.log("creatDevice Fail，", res.result.msg);
-        }
-      });
     });
     common_vendor.index.$on("LoginID", (deviceData) => {
       console.log("监听到事件来自 update ，LoginID 为：" + deviceData);
@@ -83,6 +87,7 @@ const _sfc_main = {
       const deleteDeviceSN = deviceSN;
       const filteredDevices = this.devices.filter((device) => device.deviceSN !== deleteDeviceSN);
       this.devices = filteredDevices;
+      console.log("设备列表", this.devices);
     });
     common_vendor.index.$on("saveUserInfo", (userData) => {
       this.avatarUrl = userData.userAvater;
@@ -92,6 +97,9 @@ const _sfc_main = {
     common_vendor.index.$off("addDevice");
   },
   methods: {
+    test() {
+      console.log("test:", this.avatarUrl);
+    },
     addDevice() {
       common_vendor.index.navigateTo({
         url: "/pages/addDevice/addDevice"
@@ -127,7 +135,9 @@ function _sfc_render(_ctx, _cache, $props, $setup, $data, $options) {
     e: $options.showAddDeviceBtn
   }, $options.showAddDeviceBtn ? {
     f: common_vendor.o((...args) => $options.addDevice && $options.addDevice(...args))
-  } : {});
+  } : {}, {
+    g: common_vendor.o((...args) => $options.test && $options.test(...args))
+  });
 }
 const MiniProgramPage = /* @__PURE__ */ common_vendor._export_sfc(_sfc_main, [["render", _sfc_render], ["__file", "/Users/tommybei/software/code_project/uniapp_project/warteringCloud/pages/homepage/homepage.vue"]]);
 wx.createPage(MiniProgramPage);

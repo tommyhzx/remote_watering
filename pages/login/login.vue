@@ -25,11 +25,19 @@
 		},
 		methods:{
 			async userLogin(){
-				try{
+				try{					
 					// 获取用户 code
 					const code = await this.getWxCode();
 					//获取用户openid
 					const openID = await this.getWxOpneId(code);
+					// const openID = -1;
+					if(openID == -1){
+						uni.showToast({
+							title: "获取openid失败" + JSON.stringify(openID),
+							image: "/static/logo.png"
+						});
+						return;
+					}
 					 // 检查用户是否存在
 					const userExists = await this.checkUser(openID);
 					if (!userExists) {
@@ -53,6 +61,10 @@
 						
 					}catch(err){
 						console.error('获取用户信息失败：', err);
+						uni.showToast({
+							title: "获取用户信息失败" + JSON.stringify(err),
+							image: "/static/logo.png"
+						});
 					}
 
 					// 跳转到首页
@@ -65,15 +77,15 @@
 					});
 				}
 				catch (error) {
-					console.error('登录失败：', error);
+					console.error('userLogin() fail：', error);
 					uni.showToast({
-						title: "登录异常，请重试",
+						title: "登录异常，请重试" + JSON.stringify(error),
 						image: "/static/logo.png"
 					});
 				}
 			},
 			
-			//获取微信code，同时获取OpenID
+			//获取微信code
 			async getWxCode(){
 				const res =await uni.login({
 					provider: 'weixin',
@@ -89,21 +101,36 @@
 			//获取微信用户OpenID
 			async getWxOpneId(code){
 				console.log('getWxOpneId，code is',code);
-				const res = await uni.request({
-				        url: 'https://api.weixin.qq.com/sns/jscode2session',
-				        method: 'GET',
-				        data: {
-				          appid: 'wx5d6f4dcf7b16e780',
-				          secret: '3accced62f38bf7fc1f2036484a578ae',
-				          js_code: code,
-				          grant_type: 'authorization_code'
-				        },
-					});
-					if (!res.data.openid) {
-					      throw new Error('获取用户 OpenID 失败');
-					    }
-					console.log('用户的 OpenID：', res.data.openid);
-					return res.data.openid;
+				// const res = await uni.request({
+				//         url: 'https://api.weixin.qq.com/sns/jscode2session',
+				//         method: 'GET',
+				//         data: {
+				//           appid: 'wx5d6f4dcf7b16e780',
+				//           secret: '3accced62f38bf7fc1f2036484a578ae',
+				//           js_code: code,
+				//           grant_type: 'authorization_code'
+				//         },
+				// 	});
+				// 	if (!res.data.openid) {
+				// 	      throw new Error('获取用户 OpenID 失败');
+				// 	    }
+				// 	console.log('用户的 OpenID：', res.data.openid);
+				// 	return res.data.openid;
+				const res = await uniCloud.callFunction({
+					name:"getWxOpenId",
+					data:{
+						code : code
+					}
+				});
+				if(res.result.code == 0){
+					//用户不存在
+					console.log('用户的 OpenID：', res.result.data.openId);
+					return res.result.data.openId;
+				}else{
+					//用户存在
+					console.log('获取openid失败,',res);
+					return -1;					
+				}
 			},	
 			
 			//查询数据库是否存在用户

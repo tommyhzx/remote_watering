@@ -11,6 +11,13 @@ const _sfc_main = {
       try {
         const code = await this.getWxCode();
         const openID = await this.getWxOpneId(code);
+        if (openID == -1) {
+          common_vendor.index.showToast({
+            title: "获取openid失败" + JSON.stringify(openID),
+            image: "/static/logo.png"
+          });
+          return;
+        }
         const userExists = await this.checkUser(openID);
         if (!userExists) {
           await this.createUser(openID);
@@ -30,6 +37,10 @@ const _sfc_main = {
           getApp().globalData.userTel = userInfo.userTel;
         } catch (err) {
           console.error("获取用户信息失败：", err);
+          common_vendor.index.showToast({
+            title: "获取用户信息失败" + JSON.stringify(err),
+            image: "/static/logo.png"
+          });
         }
         common_vendor.index.reLaunch({
           url: "/pages/homepage/homepage",
@@ -39,14 +50,14 @@ const _sfc_main = {
           }
         });
       } catch (error) {
-        console.error("登录失败：", error);
+        console.error("userLogin() fail：", error);
         common_vendor.index.showToast({
-          title: "登录异常，请重试",
+          title: "登录异常，请重试" + JSON.stringify(error),
           image: "/static/logo.png"
         });
       }
     },
-    //获取微信code，同时获取OpenID
+    //获取微信code
     async getWxCode() {
       const res = await common_vendor.index.login({
         provider: "weixin"
@@ -62,21 +73,19 @@ const _sfc_main = {
     //获取微信用户OpenID
     async getWxOpneId(code) {
       console.log("getWxOpneId，code is", code);
-      const res = await common_vendor.index.request({
-        url: "https://api.weixin.qq.com/sns/jscode2session",
-        method: "GET",
+      const res = await common_vendor.Ws.callFunction({
+        name: "getWxOpenId",
         data: {
-          appid: "wx5d6f4dcf7b16e780",
-          secret: "3accced62f38bf7fc1f2036484a578ae",
-          js_code: code,
-          grant_type: "authorization_code"
+          code
         }
       });
-      if (!res.data.openid) {
-        throw new Error("获取用户 OpenID 失败");
+      if (res.result.code == 0) {
+        console.log("用户的 OpenID：", res.result.data.openId);
+        return res.result.data.openId;
+      } else {
+        console.log("获取openid失败,", res);
+        return -1;
       }
-      console.log("用户的 OpenID：", res.data.openid);
-      return res.data.openid;
     },
     //查询数据库是否存在用户
     async checkUser(openid) {

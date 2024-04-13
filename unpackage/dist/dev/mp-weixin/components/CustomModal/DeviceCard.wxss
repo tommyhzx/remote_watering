@@ -34,15 +34,15 @@
   flex-direction: column;
   justify-content: space-around;
   align-items: center;
-  margin: 30rpx;
+  margin: 20rpx;
 }
 .containor .deviceInfo .device-pic {
   max-width: 250rpx;
   max-height: 250rpx;
-  margin: 30rpx;
+  margin: 20rpx;
 }
 .containor .deviceInfo .device-text {
-  margin: 20rpx;
+  margin: 5rpx;
   font-size: 20px;
 }
 .containor .deviceInfo .device-place {
@@ -50,7 +50,7 @@
   color: grey;
 }
 .containor .wifi-containor {
-  margin: 30rpx;
+  margin: 20rpx;
 }
 .containor .wifi-containor .wifi {
   display: flex;
@@ -60,7 +60,7 @@
 .containor .wifi-containor .wifi .wifi-logo {
   max-width: 100rpx;
   max-height: 100rpx;
-  margin: 20rpx;
+  margin: 10rpx;
 }
 .containor .wifi-containor .wifi .wifi-text {
   font-size: 20px;

@@ -9,23 +9,26 @@ exports.main = async (event, context) => {
 			const queryRes = await db.collection('userDevices').where({
 				deviceSN: device.deviceSN
 			}).get();
-			// 如果已存在相同的 deviceSN，则提示已有设备
+			
 			if (queryRes.data.length > 0) {
+				//使用 update 方法更新用户信息
+				const updateRes = await db.collection('userDevices').doc(queryRes.data[0]._id).update({
+					deviceName: device.deviceName,
+					devicePlace:device.devicePlace,
+					deviceUser: device.deviceUser,				
+				});
+				//返回更新成功的消息给客户端
+				return {
+					code: 0,
+					msg: '设备信息更新成功'
+				};
+			} else {
+				// 如果未找到匹配的用户信息，则返回错误信息给客户端
 				return {
 					code: -1,
-					msg: '已存在相同的设备'
+					msg: '不存在该设备'
 				};
 			}
-	        // 将 WxOpenId 插入到数据库中
-			const addRes = await db.collection('userDevices').add({
-				deviceSN: device.deviceSN,
-				// 这里可以添加其他需要保存的字段
-				deviceName: device.deviceName,
-				devicePlace:device.devicePlace,
-				deviceUser: device.deviceUser,
-
-			})
-	        
 	    } catch (err) {
 	        // 如果查询过程中发生错误，返回错误信息给客户端
 	        return {
@@ -33,9 +36,4 @@ exports.main = async (event, context) => {
 	            msg: '添加失败：' + err.message
 	        }
 	    }
-	//返回数据给客户端
-	return {
-		code: 0,
-		msg: '添加成功' 
-	}
 };

@@ -20,6 +20,7 @@
 		</swiper>
 		<!-- <InputModal :visible= "modalVisible" @confirm="onConfirm" @cancel="onCancel" ></InputModal> -->
 	</view>
+	<button @click="test">ceshi</button>
 </template>
 
 <script>
@@ -45,7 +46,7 @@
 				devices:[],
 				showAddDeviceBtn: true, // 若swiper没有设备，则添加一个按钮
 				User:'',
-				avatarUrl: getApp().globalData.userAvater // 存储用户头像地址
+				avatarUrl: getApp().globalData.userAvater || '/static/pic/defaultAvatar.png'// 存储用户头像地址
 			};
 		},
 		computed:{
@@ -60,32 +61,37 @@
 			uni.$on('addDevice', (deviceData) => {
 				if(this.deviceSN.includes(deviceData.deviceSN)){
 					uni.showToast({
-						title:"设备已存在"
+						title:"设备已存在",
 					})
-				}else{
-					this.devices.push({
+					// return;
+				}else{				
+					const device = {
 						deviceSN:deviceData.deviceSN,
 						deviceName:deviceData.deviceName,
-						devicePlace:deviceData.devicePlace
-					});
-					this.deviceSN.push(deviceData.deviceSN)
-				}
-				const device = {
-					deviceSN:deviceData.deviceSN,
-					deviceName:deviceData.deviceName,
-					devicePlace:deviceData.devicePlace,
-					deviceUser:this.User,
-				}
-				uniCloud.callFunction({
-					name:"creatDevice",
-					data:{
-						device : device
+						devicePlace:deviceData.devicePlace,
+						deviceUser:this.User,
 					}
-				}).then(res => {
-					if(res.result.code != 0){
-						console.log("creatDevice Fail，",res.result.msg);
-					}				
-				});
+					uniCloud.callFunction({
+						name:"creatDevice",
+						data:{
+							device : device
+						}
+					}).then(res => {						
+						if(res.result.code == 0){
+							this.devices.push({
+								deviceSN:deviceData.deviceSN,
+								deviceName:deviceData.deviceName,
+								devicePlace:deviceData.devicePlace
+							});
+							this.deviceSN.push(deviceData.deviceSN)
+						}else{
+							console.log("creatDevice Fail，",res.result.msg);
+							uni.showToast({
+								title:res.result.msg,
+							})
+						}				
+					});
+				}				
 			});
 			//登录后，传入wxID，从数据库获取用户的设备列表
 			uni.$on('LoginID', (deviceData) => {
@@ -110,7 +116,7 @@
 				const deleteDeviceSN = deviceSN;
 				const filteredDevices = this.devices.filter(device => device.deviceSN !== deleteDeviceSN);
 				this.devices = filteredDevices;
-
+				console.log("设备列表",this.devices);
 			});
 			
 			// 保存个人信息后触发
@@ -124,6 +130,9 @@
 		        uni.$off('addDevice');  
 		    },
 		methods:{
+			test(){
+				console.log('test:',this.avatarUrl)
+			},
 			addDevice(){
 				uni.navigateTo({
 				        url: '/pages/addDevice/addDevice' // 跳转到添加设备页
@@ -144,16 +153,19 @@
 	.header{
 		display: flex;
 		flex-direction: row;
-		justify-content: space-around;
+		justify-content: space-between;
 		align-items: center;
 		background-color: #FFE100;
 		width: 750rpx;
+		margin-top: 30rpx;
 		.avatar{
 			max-width: 100rpx;
 			max-height: 100rpx;
+			margin-right: 50rpx;
 		}
 		.logo{
 			max-height: 70rpx;
+			margin-left: 30rpx;
 		}
 	}
 	.containor{

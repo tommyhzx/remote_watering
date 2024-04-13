@@ -42,6 +42,15 @@
   width: 500rpx;
   font-size: 14px;
 }
+.input-modal .deviceSN {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+}
+.input-modal .deviceSN .deviceScan {
+  width: 90rpx;
+  height: 90rpx;
+}
 .input-modal .input-text {
   border: 1px solid #bfbfbf;
   /* Add border */

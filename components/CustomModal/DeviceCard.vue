@@ -4,8 +4,9 @@
 			 <view class="device-card">							 
 				<view class="deviceInfo">
 					<image class="device-pic" src="/static/pic/device.png" mode="heightFix"></image>
+					<text class="device-text">{{device.deviceSN}}</text>
 					<text class="device-text">{{device.deviceName}}</text>
-					<text class="device-place">{{device.devicePlace}}</text>
+					<text class="device-place">地点：{{device.devicePlace}}</text>
 				</view>		
 			</view>
 			<view class="wifi-containor">
@@ -114,14 +115,14 @@
 			flex-direction: column;
 			justify-content: space-around;
 			align-items: center;
-			margin: 30rpx;
+			margin: 20rpx;
 			.device-pic{
 				max-width: 250rpx;
 				max-height: 250rpx;
-				margin: 30rpx;
+				margin: 20rpx;
 			}
 			.device-text{
-				margin: 20rpx;
+				margin: 5rpx;
 				font-size: 20px;
 			}
 			.device-place{
@@ -130,7 +131,7 @@
 			}
 		}
 		.wifi-containor{
-			margin: 30rpx;
+			margin: 20rpx;
 			.wifi{
 				display: flex;
 				flex-direction: row;
@@ -139,7 +140,7 @@
 				.wifi-logo{
 					max-width: 100rpx;
 					max-height: 100rpx;
-					margin: 20rpx;
+					margin: 10rpx;
 				}
 				.wifi-text{
 					font-size: 20px;

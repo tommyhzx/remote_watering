@@ -4,7 +4,7 @@ const _sfc_main = {
   data() {
     return {
       userInfo: {
-        avatarUrl: getApp().globalData.userAvater,
+        avatarUrl: getApp().globalData.userAvater || "/static/pic/defaultAvatar.png",
         userName: getApp().globalData.username
       }
     };
@@ -44,6 +44,9 @@ const _sfc_main = {
         if (res.result.code != 0) {
           console.log("saveUserInfo Fail，", res.result.msg);
         }
+      });
+      common_vendor.index.navigateTo({
+        url: "/pages/homepage/homepage"
       });
     },
     cancel() {

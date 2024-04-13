@@ -33,7 +33,7 @@
 		data() {
 			return {
 				userInfo: {
-					avatarUrl: getApp().globalData.userAvater,
+					avatarUrl: getApp().globalData.userAvater || '/static/pic/defaultAvatar.png',
 					userName: getApp().globalData.username
 				},
 			};
@@ -77,9 +77,9 @@
 						console.log("saveUserInfo Fail，",res.result.msg);
 					}				
 				});
-				// uni.navigateTo({
-				//  	url:'/pages/homepage/homepage'
-				// });
+				uni.navigateTo({
+				 	url:'/pages/homepage/homepage'
+				});
 			},
 			cancel(){
 				this.userInfo.avatarUrl = getApp().globalData.userAvater;

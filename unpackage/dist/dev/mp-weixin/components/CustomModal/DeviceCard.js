@@ -75,12 +75,13 @@ const _sfc_main = {
 };
 function _sfc_render(_ctx, _cache, $props, $setup, $data, $options) {
   return {
-    a: common_vendor.t($props.device.deviceName),
-    b: common_vendor.t($props.device.devicePlace),
-    c: $data.warteringimageSrc,
-    d: common_vendor.o(($event) => $options.onWaterring($props.device)),
-    e: common_vendor.o(($event) => $options.stopWaterring($props.device)),
-    f: common_vendor.o((...args) => $options.deleteDevice && $options.deleteDevice(...args))
+    a: common_vendor.t($props.device.deviceSN),
+    b: common_vendor.t($props.device.deviceName),
+    c: common_vendor.t($props.device.devicePlace),
+    d: $data.warteringimageSrc,
+    e: common_vendor.o(($event) => $options.onWaterring($props.device)),
+    f: common_vendor.o(($event) => $options.stopWaterring($props.device)),
+    g: common_vendor.o((...args) => $options.deleteDevice && $options.deleteDevice(...args))
   };
 }
 const Component = /* @__PURE__ */ common_vendor._export_sfc(_sfc_main, [["render", _sfc_render], ["__file", "/Users/tommybei/software/code_project/uniapp_project/warteringCloud/components/CustomModal/DeviceCard.vue"]]);

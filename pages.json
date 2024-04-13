@@ -6,8 +6,8 @@
 			{
 				"navigationBarTitleText" : "登录页面",
 				"enablePullDownRefresh" : false,
-				"navigationBarBackgroundColor": "#FFE100"  ,// 这里设置为黄色
-				"navigationBarTitleImage": "/static/pic/yumiLogo.png"
+				"navigationBarBackgroundColor": "#FFE100"  // 这里设置为黄色
+				// "navigationBarTitleImage": "/static/pic/yumiLogo.png"
 			}
 		},
 		{
@@ -22,8 +22,8 @@
 			{
 				"navigationBarTitleText" : "首页",
 				"enablePullDownRefresh" : false,
-				"navigationBarBackgroundColor": "#FFE100",
-				"navigationBarTitleImage": "/static/pic/yumiLogo.png"
+				"navigationBarBackgroundColor": "#FFE100"
+				// "navigationBarTitleImage": "/static/pic/yumiLogo.png"
 			}
 		},
 		{
