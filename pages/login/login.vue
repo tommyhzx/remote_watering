@@ -8,11 +8,12 @@
 		<view class="text">畅享生活</view>
 		<view class="text">Login to control smart device</view>
 		<view class="text">and enjoy your life</view>
-		<view class="spacer-end"></view> <!-- 下方间隔 -->		
+		<view class="spacer-end"></view> <!-- 下方间隔 -->	
+		<view>
+			<button class="login_btn" @click="userLogin">立即微信登录<br>Login</button>
+		</view>
 	</view>
-	<view>
-		<button class="login_btn" @click="userLogin">立即微信登录<br>Login</button>
-	</view>
+	
 </template>
 
 <script>
@@ -215,8 +216,9 @@
 		flex-direction: column;
 		align-items: center;
 		justify-content: center;
+		height: 90vh;
 		.spacer {
-		    height: 100rpx; /* 上下间隔的高度 */
+		    height: 5vh; /* 上下间隔的高度 */
 		}
 		.logo{
 			width: 300rpx;
@@ -225,20 +227,19 @@
 			width:400rpx
 		}
 		.spacer-end{
-			height: 100rpx;
+			height: 50rpx;
 		}
 		.text{
 			font-size: 14px;
 		}
+		.login_btn{
+			width: 500rpx;
+			height: auto;
+			padding: 10px;
+			background-color: #FFE100;
+			border-radius: 15px;
+			font-size: 14px;
+			line-height: 1;
+		}
 	}
-	.login_btn{
-		width: 500rpx;
-		height: auto;
-		padding: 10px;
-		background-color: #FFE100;
-		border-radius: 15px;
-		font-size: 14px;
-		line-height: 1;
-	}
-
 </style>

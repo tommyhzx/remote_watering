@@ -28,9 +28,10 @@
   flex-direction: column;
   align-items: center;
   justify-content: center;
+  height: 90vh;
 }
 .imgContainer .spacer {
-  height: 100rpx;
+  height: 5vh;
   /* 上下间隔的高度 */
 }
 .imgContainer .logo {
@@ -40,12 +41,12 @@
   width: 400rpx;
 }
 .imgContainer .spacer-end {
-  height: 100rpx;
+  height: 50rpx;
 }
 .imgContainer .text {
   font-size: 14px;
 }
-.login_btn {
+.imgContainer .login_btn {
   width: 500rpx;
   height: auto;
   padding: 10px;

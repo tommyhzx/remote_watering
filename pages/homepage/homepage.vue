@@ -20,7 +20,6 @@
 		</swiper>
 		<!-- <InputModal :visible= "modalVisible" @confirm="onConfirm" @cancel="onCancel" ></InputModal> -->
 	</view>
-	<button @click="test">ceshi</button>
 </template>
 
 <script>
@@ -69,7 +68,7 @@
 						deviceSN:deviceData.deviceSN,
 						deviceName:deviceData.deviceName,
 						devicePlace:deviceData.devicePlace,
-						deviceUser:this.User,
+						deviceUser:getApp().globalData.username,
 					}
 					uniCloud.callFunction({
 						name:"creatDevice",
@@ -130,9 +129,6 @@
 		        uni.$off('addDevice');  
 		    },
 		methods:{
-			test(){
-				console.log('test:',this.avatarUrl)
-			},
 			addDevice(){
 				uni.navigateTo({
 				        url: '/pages/addDevice/addDevice' // 跳转到添加设备页
