@@ -34,8 +34,9 @@
 			return {
 				userInfo: {
 					avatarUrl: getApp().globalData.userAvater || '/static/pic/defaultAvatar.png',
-					userName: getApp().globalData.username
+					userName: getApp().globalData.username,
 				},
+				tempUrl:'',
 			};
 		},
 		methods:{
@@ -49,7 +50,44 @@
 				let {
 					avatarUrl
 				} = e.detail;
-				this.userInfo.avatarUrl = avatarUrl;
+				this.tempUrl = avatarUrl;
+				// uni.getFileSystemManager().getFileInfo({
+				// 	filePath:avatarUrl,
+				// 	success:res => {
+				// 		if(res.size > 1024*1024){
+				// 			return uni.showToast({
+				// 				icon:"none",
+				// 				title:"图片不能超过1M"
+				// 			})
+				// 		}
+						
+						
+				// 		uni.getFileSystemManager().readFile({
+				// 			filePath:avatarUrl,
+				// 			encoding:"base64",
+				// 			success:res => {								
+				// 				let imageBase64 = 'data:image/jpg;base64,'+res.data;
+				// 				console.log("读取头像文件",res);
+				// 				uniCloud.callFunction({
+				// 					name:"upLoadAvatarImg",
+				// 					data:{
+				// 						imageBase64:imageBase64,
+				// 						WxOpenId:getApp().globalData.WxOpenId,
+				// 					}
+				// 				}).then(res => {
+				// 					if(res.result.code == 0){
+				// 						this.userInfo.avatarUrl = res.result.msg;
+				// 						console.log("上传成功",res.result);
+				// 					}else{
+				// 						console.log("上传失败",res.result.msg);
+				// 					}
+				// 				})
+				// 			}
+				// 		});
+				// 	}
+				// });
+				
+				console.log("userInfo:",e);
 			},
 			changeName(event){
 				this.userInfo.userName = event.target.value;
@@ -62,7 +100,47 @@
 				getApp().globalData.userAvater = this.userInfo.avatarUrl;
 				getApp().globalData.username = this.userInfo.userName;
 				uni.$emit('saveUserInfo', this.userInfo);
-				console.log("WxOpenId:",getApp().globalData.WxOpenId);
+				console.log("save user WxOpenId is:",getApp().globalData.WxOpenId);
+				if(this.tempUrl != ''){
+					console.log("url 不为空");
+					uni.getFileSystemManager().getFileInfo({
+						filePath:this.tempUrl,
+						success:res => {
+							if(res.size > 1024*1024){
+								return uni.showToast({
+									icon:"none",
+									title:"图片不能超过1M"
+								})
+							}
+							
+							
+							uni.getFileSystemManager().readFile({
+								filePath:this.tempUrl,
+								encoding:"base64",
+								success:res => {								
+									let imageBase64 = 'data:image/jpg;base64,'+res.data;
+									console.log("读取头像文件",res);
+									uniCloud.callFunction({
+										name:"upLoadAvatarImg",
+										data:{
+											imageBase64:imageBase64,
+											WxOpenId:getApp().globalData.WxOpenId,
+										}
+									}).then(res => {
+										if(res.result.code == 0){
+											this.userInfo.avatarUrl = res.result.msg;
+											console.log("上传成功",res.result);
+										}else{
+											console.log("上传失败",res.result.msg);
+										}
+									})
+								}
+							});
+						}
+					});
+				}
+				
+				
 				//保存数据库
 				uniCloud.callFunction({
 					name:"saveUserInfo",

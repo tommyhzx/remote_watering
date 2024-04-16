@@ -1,0 +1,7 @@
+{
+  "name": "upLoadAvatarImg",
+  "dependencies": {},
+  "extensions": {
+    "uni-cloud-jql": {}
+  }
+}

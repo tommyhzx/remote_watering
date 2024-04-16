@@ -6,7 +6,8 @@ const _sfc_main = {
       userInfo: {
         avatarUrl: getApp().globalData.userAvater || "/static/pic/defaultAvatar.png",
         userName: getApp().globalData.username
-      }
+      },
+      tempUrl: ""
     };
   },
   methods: {
@@ -19,7 +20,8 @@ const _sfc_main = {
       let {
         avatarUrl
       } = e.detail;
-      this.userInfo.avatarUrl = avatarUrl;
+      this.tempUrl = avatarUrl;
+      console.log("userInfo:", e);
     },
     changeName(event) {
       this.userInfo.userName = event.target.value;
@@ -31,7 +33,43 @@ const _sfc_main = {
       getApp().globalData.userAvater = this.userInfo.avatarUrl;
       getApp().globalData.username = this.userInfo.userName;
       common_vendor.index.$emit("saveUserInfo", this.userInfo);
-      console.log("WxOpenId:", getApp().globalData.WxOpenId);
+      console.log("save user WxOpenId is:", getApp().globalData.WxOpenId);
+      if (this.tempUrl != "") {
+        console.log("url 不为空");
+        common_vendor.index.getFileSystemManager().getFileInfo({
+          filePath: this.tempUrl,
+          success: (res) => {
+            if (res.size > 1024 * 1024) {
+              return common_vendor.index.showToast({
+                icon: "none",
+                title: "图片不能超过1M"
+              });
+            }
+            common_vendor.index.getFileSystemManager().readFile({
+              filePath: this.tempUrl,
+              encoding: "base64",
+              success: (res2) => {
+                let imageBase64 = "data:image/jpg;base64," + res2.data;
+                console.log("读取头像文件", res2);
+                common_vendor.Ws.callFunction({
+                  name: "upLoadAvatarImg",
+                  data: {
+                    imageBase64,
+                    WxOpenId: getApp().globalData.WxOpenId
+                  }
+                }).then((res3) => {
+                  if (res3.result.code == 0) {
+                    this.userInfo.avatarUrl = res3.result.msg;
+                    console.log("上传成功", res3.result);
+                  } else {
+                    console.log("上传失败", res3.result.msg);
+                  }
+                });
+              }
+            });
+          }
+        });
+      }
       common_vendor.Ws.callFunction({
         name: "saveUserInfo",
         data: {
