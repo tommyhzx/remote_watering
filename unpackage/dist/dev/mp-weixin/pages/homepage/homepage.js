@@ -43,7 +43,7 @@ const _sfc_main = {
           deviceSN: deviceData.deviceSN,
           deviceName: deviceData.deviceName,
           devicePlace: deviceData.devicePlace,
-          deviceUser: this.User
+          deviceUser: getApp().globalData.WxOpenId
         };
         common_vendor.Ws.callFunction({
           name: "creatDevice",
@@ -93,13 +93,13 @@ const _sfc_main = {
       this.avatarUrl = userData.userAvater;
     });
   },
+  onShow() {
+    common_vendor.index.hideHomeButton();
+  },
   onUnload() {
     common_vendor.index.$off("addDevice");
   },
   methods: {
-    test() {
-      console.log("test:", this.avatarUrl);
-    },
     addDevice() {
       common_vendor.index.navigateTo({
         url: "/pages/addDevice/addDevice"
@@ -109,7 +109,7 @@ const _sfc_main = {
     gotoAbout() {
       common_vendor.index.navigateTo({
         url: "/pages/about/about"
-        // 跳转到添加设备页
+        // 跳转到个人主页
       });
     }
   }
@@ -135,9 +135,7 @@ function _sfc_render(_ctx, _cache, $props, $setup, $data, $options) {
     e: $options.showAddDeviceBtn
   }, $options.showAddDeviceBtn ? {
     f: common_vendor.o((...args) => $options.addDevice && $options.addDevice(...args))
-  } : {}, {
-    g: common_vendor.o((...args) => $options.test && $options.test(...args))
-  });
+  } : {});
 }
 const MiniProgramPage = /* @__PURE__ */ common_vendor._export_sfc(_sfc_main, [["render", _sfc_render], ["__file", "/Users/tommybei/software/code_project/uniapp_project/warteringCloud/pages/homepage/homepage.vue"]]);
 wx.createPage(MiniProgramPage);

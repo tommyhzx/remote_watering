@@ -35,7 +35,6 @@ const _sfc_main = {
       common_vendor.index.$emit("saveUserInfo", this.userInfo);
       console.log("save user WxOpenId is:", getApp().globalData.WxOpenId);
       if (this.tempUrl != "") {
-        console.log("url 不为空");
         common_vendor.index.getFileSystemManager().getFileInfo({
           filePath: this.tempUrl,
           success: (res) => {
@@ -83,14 +82,14 @@ const _sfc_main = {
           console.log("saveUserInfo Fail，", res.result.msg);
         }
       });
-      common_vendor.index.navigateTo({
+      common_vendor.index.navigateBack({
         url: "/pages/homepage/homepage"
       });
     },
     cancel() {
       this.userInfo.avatarUrl = getApp().globalData.userAvater;
       this.userInfo.userName = getApp().globalData.username;
-      common_vendor.index.navigateTo({
+      common_vendor.index.navigateBack({
         url: "/pages/homepage/homepage"
       });
     }

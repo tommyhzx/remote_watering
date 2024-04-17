@@ -3,20 +3,23 @@
 		<view class="overlay">
 			<view class="spacer"></view>
 			<view class="imagecontainer">
-				<image class="device-pic" src="/static/addDevice/device-pic.png" mode="widthFix"/>
+				<image class="device-pic" src="/static/addDevice/device.png" mode="widthFix"/>
 				<view>浇花器</view>
 			</view>
 			
 			<view class="input-modal">
 				<view>设备号</view>
 				<view class='deviceSN'>					
-					<input class="input-text" type="text" v-model="device.deviceSN" placeholder="请输入设备ID">
-					<image class='deviceScan' src='../../static/icon/device_select.png' @click="scanQRcode"></image>
+					<input class="deviceSN-text" type="text" v-model="device.deviceSN" placeholder="请输入设备ID">
+					<image class='deviceScan' src='../../static/addDevice/device_select.png' @click="scanQRcode"></image>
 				</view>
 				<view>设备名</view>
 				<input class="input-text" type="text" v-model="device.deviceName" placeholder="输入设备名">
 				<view>场景位置</view>
 				<input class="input-text" type="text" v-model="device.devicePlace" placeholder="输入场景">
+				
+			</view>
+			<view class="btn">
 				<button class="button-ok" @click="confirm">确定</button>
 				<button class="button-cancel" @click="cancel">取消</button>
 			</view>
@@ -48,10 +51,6 @@
 				uni.$emit("addDevice",deviceData);	
 				uni.navigateBack({
 					delta: 1 ,// 返回上一级页面
-					// success() {
-						
-
-					// }
 				});
 				
 			},
@@ -86,51 +85,67 @@
 	.overlay{
 		display: flex;
 		flex-direction: column;
+		justify-content: space-around;
 		align-items: center;
-	}
-	.imagecontainer{
-		display: flex;
-		justify-content: center;
-		align-items: center;
-		padding: 50px;
-		.device-pic{
-			width: 200rpx;
-			padding-right: 50rpx;
+		height: 100vh;		
+		.imagecontainer{
+			display: flex;
+			// justify-content: center;
+			align-items: center;
+			// padding: 50px;
+			.device-pic{
+				width: 200rpx;
+				// padding-right: 50rpx;
+			}
+		}
+		
+		.input-modal {
+			width: 500rpx;
+			font-size: 14px;
+			.deviceSN{
+				display: flex;
+				flex-direction: row;
+				justify-content: space-between;
+				.deviceSN-text{
+				  border: 1px solid #bfbfbf; /* Add border */
+				  border-radius: 5px;
+				  padding: 1px;
+				  margin-bottom: 20px;
+				  height: 80rpx;
+				  width: 400rpx;
+				}
+				.deviceScan{
+				  width: 90rpx;
+				  height: 90rpx;
+				}
+			}
+			.input-text{
+				border: 1px solid #bfbfbf; /* Add border */
+				border-radius: 5px;
+				padding: 1px;
+				margin-bottom: 20px;
+				height: 80rpx;
+			}
+		}
+		.btn{
+			margin-bottom: 50rpx;
+			.button-ok{
+				width: 300rpx;
+				font-size: 14px;
+				margin-bottom: 5px;		
+				border-radius: 10px;
+				background-color: #FFE100;
+			}
+			.button-cancel{
+				width: 300rpx;
+				font-size: 14px;
+				margin-bottom: 5px;		
+				border-radius: 10px;
+				background-color: #BFBFBF;
+			}
 		}
 	}
 	
-.input-modal {
-	  width: 500rpx;
-	  font-size: 14px;
-	  .deviceSN{
-		  display: flex;
-		  flex-direction: row;
-		  justify-content: space-between;
-		  .deviceScan{
-			  width: 90rpx;
-			  height: 90rpx;
-		  }
-	  }
-	  .input-text{
-		border: 1px solid #bfbfbf; /* Add border */
-		border-radius: 5px;
-		padding: 1px;
-		margin-bottom: 20px;
-		height: 80rpx;
-	  }
-	  .button-ok{
-		width: 300rpx;
-		font-size: 14px;
-		margin-bottom: 5px;		
-		border-radius: 10px;
-		background-color: #FFE100;
-	  }
-	  .button-cancel{
-	  		width: 300rpx;
-	  		font-size: 14px;
-	  		margin-bottom: 5px;		
-	  		border-radius: 10px;
-	  		background-color: #BFBFBF;
-	  }
-	}
+	
+
 </style>

@@ -27,6 +27,9 @@
 		methods:{
 			async userLogin(){
 				try{					
+					uni.showLoading({
+						title:"正在登录中"
+					});
 					// 获取用户 code
 					const code = await this.getWxCode();
 					//获取用户openid
@@ -67,7 +70,7 @@
 							image: "/static/logo.png"
 						});
 					}
-
+					uni.hideLoading();
 					// 跳转到首页
 					uni.reLaunch({
 					    url: '/pages/homepage/homepage',

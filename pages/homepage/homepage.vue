@@ -15,6 +15,7 @@
 			<swiper-item class="add-device-btn-containor" v-if="showAddDeviceBtn">
 				<view  class="add-device-btn">
 					<image src="../../static/homepage/add-btn.png" @click="addDevice" mode="scaleToFill"></image>
+					<text class="add-device-text">请添加设备</text>
 				</view>
 			</swiper-item>		
 		</swiper>
@@ -68,8 +69,9 @@
 						deviceSN:deviceData.deviceSN,
 						deviceName:deviceData.deviceName,
 						devicePlace:deviceData.devicePlace,
-						deviceUser:getApp().globalData.username,
+						deviceUser:getApp().globalData.WxOpenId,
 					}
+					
 					uniCloud.callFunction({
 						name:"creatDevice",
 						data:{
@@ -124,6 +126,9 @@
 			        this.avatarUrl = userData.userAvater;
 			});
 		},
+		onShow() {
+			uni.hideHomeButton();
+		},
 		onUnload() {  
 		    // 移除监听事件  
 		        uni.$off('addDevice');  
@@ -138,7 +143,7 @@
 			},
 			gotoAbout(){
 				uni.navigateTo({
-				        url: '/pages/about/about' // 跳转到添加设备页
+				        url: '/pages/about/about' // 跳转到个人主页
 				});
 			}
 		}
@@ -146,33 +151,36 @@
 </script>
 
 <style lang="scss">
-	.header{
-		display: flex;
-		flex-direction: row;
-		justify-content: space-between;
-		align-items: center;
-		background-color: #FFE100;
-		width: 750rpx;
-		margin-top: 30rpx;
-		.avatar{
-			max-width: 100rpx;
-			max-height: 100rpx;
-			margin-right: 50rpx;
-		}
-		.logo{
-			max-height: 70rpx;
-			margin-left: 30rpx;
-		}
-	}
+	
 	.containor{
 		display: flex;
 		flex-direction: column;
-		align-items: center;	
+		// justify-content: space-around;
+		// align-items: center;	
 		background-color: #FFE100;
+		.header{
+			display: flex;
+			flex-direction: row;
+			justify-content: space-between;
+			align-items: center;
+			background-color: #FFE100;
+			width: 100hw;
+			margin-top: 30rpx;
+			.avatar{
+				max-width: 100rpx;
+				max-height: 100rpx;
+				margin-right: 50rpx;
+				border-radius: 15px;
+			}
+			.logo{
+				max-height: 70rpx;
+				margin-left: 30rpx;
+			}
+		}
 		.swiper{
 			display: flex;
 			align-items: center;
-			height: 1050rpx;
+			height: 85vh;
 			width: 750rpx;
 			margin-top: 30rpx;
 			background-color: white;
@@ -181,11 +189,14 @@
 				display: flex;
 				justify-content: center;
 				align-items: center;
-				.add-device-btn image{
-					display: flex;
-					align-items: center;
-					width: 100rpx;
-					max-height: 100rpx;
+				.add-device-btn {
+					image{
+						display: flex;
+						align-items: center;
+						width: 150rpx;
+						max-height: 150rpx;
+						margin-bottom: 30rpx;
+					}
 				}
 			}
 		}

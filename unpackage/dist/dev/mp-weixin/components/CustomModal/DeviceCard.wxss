@@ -27,14 +27,16 @@
   background-color: #ffffff;
   display: flex;
   flex-direction: column;
+  justify-content: space-around;
   align-items: center;
+  height: 100%;
 }
 .containor .deviceInfo {
   display: flex;
   flex-direction: column;
   justify-content: space-around;
   align-items: center;
-  margin: 20rpx;
+  margin-top: 10vh;
 }
 .containor .deviceInfo .device-pic {
   max-width: 250rpx;

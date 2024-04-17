@@ -25,8 +25,6 @@ const _sfc_main = {
       common_vendor.index.navigateBack({
         delta: 1
         // 返回上一级页面
-        // success() {
-        // }
       });
     },
     cancel() {

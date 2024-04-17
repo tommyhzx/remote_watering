@@ -108,14 +108,16 @@
 		background-color: #ffffff;
 		display: flex;
 		flex-direction: column;
+		justify-content: space-around;
 		align-items: center;
+		height: 100%;
 		.deviceInfo{
 			//height: 250rpx;
 			display: flex;
 			flex-direction: column;
 			justify-content: space-around;
 			align-items: center;
-			margin: 20rpx;
+			margin-top: 10vh;
 			.device-pic{
 				max-width: 250rpx;
 				max-height: 250rpx;

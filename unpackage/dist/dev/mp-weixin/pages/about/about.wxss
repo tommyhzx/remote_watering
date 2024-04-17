@@ -26,6 +26,9 @@
 .container {
   display: flex;
   flex-direction: column;
+  height: 100vh;
+  margin-top: auto;
+  /* 使容器尽可能靠底部 */
 }
 .container .title {
   display: flex;
@@ -77,4 +80,20 @@
   border-radius: 40rpx;
   border: #000000;
   color: firebrick;
+  margin-top: auto;
+  margin-bottom: 100rpx;
+}
+.container .btn-save {
+  width: 300rpx;
+  font-size: 14px;
+  margin-bottom: 5px;
+  border-radius: 10px;
+  background-color: #FFE100;
+}
+.container .btn-cancel {
+  width: 300rpx;
+  font-size: 14px;
+  margin-bottom: 5px;
+  border-radius: 10px;
+  background-color: #BFBFBF;
 }

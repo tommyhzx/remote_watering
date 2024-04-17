@@ -9,6 +9,9 @@ const _sfc_main = {
   methods: {
     async userLogin() {
       try {
+        common_vendor.index.showLoading({
+          title: "正在登录中"
+        });
         const code = await this.getWxCode();
         const openID = await this.getWxOpneId(code);
         if (openID == -1) {
@@ -42,6 +45,7 @@ const _sfc_main = {
             image: "/static/logo.png"
           });
         }
+        common_vendor.index.hideLoading();
         common_vendor.index.reLaunch({
           url: "/pages/homepage/homepage",
           success() {
