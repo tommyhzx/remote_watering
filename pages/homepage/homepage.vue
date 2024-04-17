@@ -23,7 +23,6 @@
 				</view>
 			</swiper-item>		
 		</swiper>
-		<!-- <InputModal :visible= "modalVisible" @confirm="onConfirm" @cancel="onCancel" ></InputModal> -->
 	</view>
 	<button @click="test">测试跳转</button>
 </template>
@@ -41,16 +40,12 @@
 		},
 		data() {
 			return {
-				modalVisible: false,
+				//当前页面已经添加设备的SN码
 				deviceSN:[],
-				defaultDevice:{
-					deviceSN:'',
-					deviceName:"默认设备",
-					devicePlace:"设备位置",
-				},
+				//当前页面已添加设备的信息
 				devices:[],
 				showAddDeviceBtn: true, // 若swiper没有设备，则添加一个按钮
-				User:'',
+
 				avatarUrl: getApp().globalData.userAvater || '/static/pic/defaultAvatar.png',// 存储用户头像地址
 				userName:getApp().globalData.username,
 			};
@@ -64,6 +59,22 @@
 			
 		},
 		onLoad(option) {
+			//登录后，传入wxID，从数据库获取用户的设备列表
+			uni.$on('LoginID', (deviceData) => {
+				//获取当前用户保存在数据库里的设备信息
+				uniCloud.callFunction({
+					name:"getUserDevices",
+					data:{
+						deviceUser : deviceData
+					}
+				}).then(res => {					
+					if(res.result.code == 0){
+						console.log("查询用户设备为：",res);
+						this.devices = res.result.data;
+					}
+				})
+			});
+			
 			uni.$on('addDevice', (deviceData) => {
 				if(this.deviceSN.includes(deviceData.deviceSN)){
 					uni.showToast({
@@ -85,6 +96,7 @@
 						}
 					}).then(res => {						
 						if(res.result.code == 0){
+							//应该从数据库拿，不要直接改
 							this.devices.push({
 								deviceSN:deviceData.deviceSN,
 								deviceName:deviceData.deviceName,
@@ -99,24 +111,7 @@
 						}				
 					});
 				}				
-			});
-			//登录后，传入wxID，从数据库获取用户的设备列表
-			uni.$on('LoginID', (deviceData) => {
-				console.log('监听到事件来自 update ，LoginID 为：' + deviceData);
-				this.User = deviceData;
-				//获取当前用户保存在数据库里的设备信息
-				uniCloud.callFunction({
-					name:"getUserDevices",
-					data:{
-						deviceUser : deviceData
-					}
-				}).then(res => {					
-					if(res.result.code == 0){
-						console.log("查询用户设备为：",res);
-						this.devices = res.result.data;
-					}
-				})
-			});
+			});			
 			
 			uni.$on('deleteDevice', (deviceSN) => {
 				console.log("删除设备列表",deviceSN);
@@ -133,8 +128,7 @@
 					this.userName = getApp().globalData.username;
 			});
 		},
-		onShow() {
-			
+		onShow() {			
 			uni.hideHomeButton();
 		},
 		onUnload() {  
@@ -145,9 +139,7 @@
 			addDevice(){
 				uni.navigateTo({
 				        url: '/pages/addDevice/addDevice' // 跳转到添加设备页
-				});
-				// this.modalVisible = true;
-				
+				});				
 			},
 			gotoAbout(){
 				uni.navigateTo({

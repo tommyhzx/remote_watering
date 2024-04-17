@@ -12,7 +12,7 @@
 				<view class='deviceSN'>		
 					<view>
 						<input class="deviceSN-text" type="text" v-model="device.deviceSN" placeholder="请输入设备ID">
-						<input class="deviceSN-text" type="text" v-model="device.deviceSN" placeholder="请输入设备密码">
+						<input class="deviceSN-text" type="text" v-model="device.devicePassword" placeholder="请输入设备密码">
 					</view>	
 					<image class='deviceScan' src='../../static/addDevice/device_select.png' @click="scanQRcode"></image>
 				</view>
@@ -95,8 +95,7 @@
 					}
 				});
 			}
-		}
-		
+		}		
 	}
 </script>
 

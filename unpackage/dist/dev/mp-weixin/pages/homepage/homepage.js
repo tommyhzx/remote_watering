@@ -10,17 +10,12 @@ const _sfc_main = {
   props: {},
   data() {
     return {
-      modalVisible: false,
+      //当前页面已经添加设备的SN码
       deviceSN: [],
-      defaultDevice: {
-        deviceSN: "",
-        deviceName: "默认设备",
-        devicePlace: "设备位置"
-      },
+      //当前页面已添加设备的信息
       devices: [],
       showAddDeviceBtn: true,
       // 若swiper没有设备，则添加一个按钮
-      User: "",
       avatarUrl: getApp().globalData.userAvater || "/static/pic/defaultAvatar.png",
       // 存储用户头像地址
       userName: getApp().globalData.username
@@ -34,6 +29,19 @@ const _sfc_main = {
   onReady() {
   },
   onLoad(option) {
+    common_vendor.index.$on("LoginID", (deviceData) => {
+      common_vendor.Ws.callFunction({
+        name: "getUserDevices",
+        data: {
+          deviceUser: deviceData
+        }
+      }).then((res) => {
+        if (res.result.code == 0) {
+          console.log("查询用户设备为：", res);
+          this.devices = res.result.data;
+        }
+      });
+    });
     common_vendor.index.$on("addDevice", (deviceData) => {
       if (this.deviceSN.includes(deviceData.deviceSN)) {
         common_vendor.index.showToast({
@@ -67,21 +75,6 @@ const _sfc_main = {
           }
         });
       }
-    });
-    common_vendor.index.$on("LoginID", (deviceData) => {
-      console.log("监听到事件来自 update ，LoginID 为：" + deviceData);
-      this.User = deviceData;
-      common_vendor.Ws.callFunction({
-        name: "getUserDevices",
-        data: {
-          deviceUser: deviceData
-        }
-      }).then((res) => {
-        if (res.result.code == 0) {
-          console.log("查询用户设备为：", res);
-          this.devices = res.result.data;
-        }
-      });
     });
     common_vendor.index.$on("deleteDevice", (deviceSN) => {
       console.log("删除设备列表", deviceSN);

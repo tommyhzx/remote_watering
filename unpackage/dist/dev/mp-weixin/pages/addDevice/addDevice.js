@@ -67,8 +67,8 @@ function _sfc_render(_ctx, _cache, $props, $setup, $data, $options) {
   return {
     a: $data.device.deviceSN,
     b: common_vendor.o(($event) => $data.device.deviceSN = $event.detail.value),
-    c: $data.device.deviceSN,
-    d: common_vendor.o(($event) => $data.device.deviceSN = $event.detail.value),
+    c: $data.device.devicePassword,
+    d: common_vendor.o(($event) => $data.device.devicePassword = $event.detail.value),
     e: common_vendor.o((...args) => $options.scanQRcode && $options.scanQRcode(...args)),
     f: $data.device.deviceName,
     g: common_vendor.o(($event) => $data.device.deviceName = $event.detail.value),

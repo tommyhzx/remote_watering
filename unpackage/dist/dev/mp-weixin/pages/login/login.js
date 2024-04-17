@@ -2,9 +2,7 @@
 const common_vendor = require("../../common/vendor.js");
 const _sfc_main = {
   data() {
-    return {
-      WxOpenId: ""
-    };
+    return {};
   },
   methods: {
     async userLogin() {
@@ -135,13 +133,9 @@ const _sfc_main = {
           console.log("登录失败，code:", res);
         }
       });
-    },
-    test() {
-      console.log("test", this.WxOpenId);
     }
   },
   onLoad() {
-    console.log("onLoad");
   }
 };
 function _sfc_render(_ctx, _cache, $props, $setup, $data, $options) {

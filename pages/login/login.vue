@@ -20,7 +20,7 @@
 	export default {
 		data() {
 			return {
-				WxOpenId: ''				
+								
 			};
 		},
 		methods:{
@@ -87,8 +87,7 @@
 						image: "/static/logo.png"
 					});
 				}
-			},
-			
+			},		
 			//获取微信code
 			async getWxCode(){
 				const res =await uni.login({
@@ -105,21 +104,6 @@
 			//获取微信用户OpenID
 			async getWxOpneId(code){
 				console.log('getWxOpneId，code is',code);
-				// const res = await uni.request({
-				//         url: 'https://api.weixin.qq.com/sns/jscode2session',
-				//         method: 'GET',
-				//         data: {
-				//           appid: 'wx5d6f4dcf7b16e780',
-				//           secret: '3accced62f38bf7fc1f2036484a578ae',
-				//           js_code: code,
-				//           grant_type: 'authorization_code'
-				//         },
-				// 	});
-				// 	if (!res.data.openid) {
-				// 	      throw new Error('获取用户 OpenID 失败');
-				// 	    }
-				// 	console.log('用户的 OpenID：', res.data.openid);
-				// 	return res.data.openid;
 				const res = await uniCloud.callFunction({
 					name:"getWxOpenId",
 					data:{
@@ -186,29 +170,10 @@
 						console.log('登录失败，code:',res);
 					}
 				});
-			},
-			
-			test(){
-				console.log("test",this.WxOpenId);
-			}
+			},			
 		},
 		onLoad(){
-			console.log("onLoad");
-			// uni.login({
-			// 	"provider":'weixin',
-			// 	"onlyAuthorize": true, // 微信登录仅请求授权认证
-			// 	success: res => {
-			// 		if(res.code){
-			// 			console.log('登录成功，code:',res.code);
-			// 			this.WxOpenId = "88888888";
-			// 		} else {
-			// 			console.log('登录失败：',err);
-			// 		}
-			// 	},
-			// 	fail: res => {
-			// 		console.log('login fail：',res);
-			// 	}
-			// })
+
 		}
 	}
 </script>

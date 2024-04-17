@@ -40,8 +40,7 @@
 				deviceSN:String,
 				deviceName:String,
 				devicePlace:String,	
-			}
-					
+			}					
 		},
 		methods:{
 			onWaterring(device){
@@ -146,8 +145,7 @@
 				}
 				.wifi-text{
 					font-size: 20px;
-				}
-				
+				}				
 			}
 		}
 		.button-containor{
@@ -157,14 +155,12 @@
 				.col2Image{
 					max-width: 200rpx;
 					max-height: 200rpx;
-				}
-				
+				}			
 			}
 		}
 		.delete-pic{
 			height: 50rpx;
 			margin-top: 30rpx;
 		}
-	}
-	
+	}	
 </style>
