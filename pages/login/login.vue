@@ -20,8 +20,7 @@
 	export default {
 		data() {
 			return {
-				WxOpenId: ''
-				
+				WxOpenId: ''				
 			};
 		},
 		methods:{
@@ -64,6 +63,7 @@
 						getApp().globalData.userTel = userInfo.userTel;	
 						
 					}catch(err){
+						uni.hideLoading();
 						console.error('获取用户信息失败：', err);
 						uni.showToast({
 							title: "获取用户信息失败" + JSON.stringify(err),

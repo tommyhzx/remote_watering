@@ -21,8 +21,9 @@ const _sfc_main = {
       showAddDeviceBtn: true,
       // 若swiper没有设备，则添加一个按钮
       User: "",
-      avatarUrl: getApp().globalData.userAvater || "/static/pic/defaultAvatar.png"
+      avatarUrl: getApp().globalData.userAvater || "/static/pic/defaultAvatar.png",
       // 存储用户头像地址
+      userName: getApp().globalData.username
     };
   },
   computed: {
@@ -90,7 +91,8 @@ const _sfc_main = {
       console.log("设备列表", this.devices);
     });
     common_vendor.index.$on("saveUserInfo", (userData) => {
-      this.avatarUrl = userData.userAvater;
+      this.avatarUrl = userData.avatarUrl;
+      this.userName = getApp().globalData.username;
     });
   },
   onShow() {
@@ -111,6 +113,20 @@ const _sfc_main = {
         url: "/pages/about/about"
         // 跳转到个人主页
       });
+    },
+    test() {
+      console.log("tiaozhuan");
+      common_vendor.index.navigateToMiniProgram({
+        appId: "wxc8125e5b4219faab",
+        path: "pages/ap/ap",
+        envVersion: "release",
+        success(res) {
+          console.log("跳转成功", res);
+        },
+        fail(err) {
+          console.error("跳转失败", err);
+        }
+      });
     }
   }
 };
@@ -121,9 +137,10 @@ if (!Array) {
 function _sfc_render(_ctx, _cache, $props, $setup, $data, $options) {
   return common_vendor.e({
     a: common_vendor.o((...args) => $options.addDevice && $options.addDevice(...args)),
-    b: $data.avatarUrl,
-    c: common_vendor.o((...args) => $options.gotoAbout && $options.gotoAbout(...args)),
-    d: common_vendor.f($data.devices, (device, index, i0) => {
+    b: common_vendor.t($data.userName),
+    c: $data.avatarUrl,
+    d: common_vendor.o((...args) => $options.gotoAbout && $options.gotoAbout(...args)),
+    e: common_vendor.f($data.devices, (device, index, i0) => {
       return {
         a: "27eb7476-0-" + i0,
         b: common_vendor.p({
@@ -132,10 +149,12 @@ function _sfc_render(_ctx, _cache, $props, $setup, $data, $options) {
         c: index
       };
     }),
-    e: $options.showAddDeviceBtn
+    f: $options.showAddDeviceBtn
   }, $options.showAddDeviceBtn ? {
-    f: common_vendor.o((...args) => $options.addDevice && $options.addDevice(...args))
-  } : {});
+    g: common_vendor.o((...args) => $options.addDevice && $options.addDevice(...args))
+  } : {}, {
+    h: common_vendor.o((...args) => $options.test && $options.test(...args))
+  });
 }
 const MiniProgramPage = /* @__PURE__ */ common_vendor._export_sfc(_sfc_main, [["render", _sfc_render], ["__file", "/Users/tommybei/software/code_project/uniapp_project/warteringCloud/pages/homepage/homepage.vue"]]);
 wx.createPage(MiniProgramPage);

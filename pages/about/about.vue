@@ -60,10 +60,7 @@
 				this.userInfo.userName = event.target.value;
 			},
 			save(){
-				// 修改全局变量的地方
-				getApp().globalData.userAvater = this.userInfo.avatarUrl;
-				getApp().globalData.username = this.userInfo.userName;
-				uni.$emit('saveUserInfo', this.userInfo);
+				
 				console.log("save user WxOpenId is:",getApp().globalData.WxOpenId);
 				if(this.tempUrl != ''){
 					
@@ -91,6 +88,7 @@
 										}
 									}).then(res => {
 										if(res.result.code == 0){
+											//获取最终数据库的url
 											this.userInfo.avatarUrl = res.result.msg;
 											console.log("上传成功",res.result);
 										}else{
@@ -102,7 +100,10 @@
 						}
 					});
 				}				
-				
+				// 修改全局变量的地方
+				getApp().globalData.userAvater = this.userInfo.avatarUrl;
+				getApp().globalData.username = this.userInfo.userName;
+				uni.$emit('saveUserInfo', this.userInfo);
 				//保存数据库
 				uniCloud.callFunction({
 					name:"saveUserInfo",
@@ -117,6 +118,8 @@
 						console.log("saveUserInfo Fail，",res.result.msg);
 					}				
 				});
+				
+				
 				uni.navigateBack({
 				 	url:'/pages/homepage/homepage'
 				});

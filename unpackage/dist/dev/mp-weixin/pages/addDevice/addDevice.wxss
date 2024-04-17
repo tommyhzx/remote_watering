@@ -45,6 +45,7 @@
   display: flex;
   flex-direction: row;
   justify-content: space-between;
+  align-items: center;
 }
 .overlay .input-modal .deviceSN .deviceSN-text {
   border: 1px solid #bfbfbf;
@@ -53,11 +54,11 @@
   padding: 1px;
   margin-bottom: 20px;
   height: 80rpx;
-  width: 400rpx;
+  width: 350rpx;
 }
 .overlay .input-modal .deviceSN .deviceScan {
-  width: 90rpx;
-  height: 90rpx;
+  width: 120rpx;
+  height: 120rpx;
 }
 .overlay .input-modal .input-text {
   border: 1px solid #bfbfbf;

@@ -39,6 +39,7 @@ const _sfc_main = {
           getApp().globalData.userAvater = userInfo.userAvater;
           getApp().globalData.userTel = userInfo.userTel;
         } catch (err) {
+          common_vendor.index.hideLoading();
           console.error("获取用户信息失败：", err);
           common_vendor.index.showToast({
             title: "获取用户信息失败" + JSON.stringify(err),

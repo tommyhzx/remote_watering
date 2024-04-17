@@ -2,7 +2,11 @@
 	<view class="containor">	
 		<view class="header">
 			<image class="logo" src="/static/homepage/add_pic.png" @click="addDevice" mode="heightFix"/>
-		    <image class="avatar" :src='avatarUrl' @click="gotoAbout"/>
+			<view class="welcom">
+				<text class="welcom-text">欢迎, {{userName}}</text>
+				<image class="avatar" :src='avatarUrl' @click="gotoAbout"/>
+			</view>
+		    
 		</view>
 
 		<swiper class="swiper" interval="interval" indicator-dots="true" 
@@ -21,6 +25,7 @@
 		</swiper>
 		<!-- <InputModal :visible= "modalVisible" @confirm="onConfirm" @cancel="onCancel" ></InputModal> -->
 	</view>
+	<button @click="test">测试跳转</button>
 </template>
 
 <script>
@@ -46,7 +51,8 @@
 				devices:[],
 				showAddDeviceBtn: true, // 若swiper没有设备，则添加一个按钮
 				User:'',
-				avatarUrl: getApp().globalData.userAvater || '/static/pic/defaultAvatar.png'// 存储用户头像地址
+				avatarUrl: getApp().globalData.userAvater || '/static/pic/defaultAvatar.png',// 存储用户头像地址
+				userName:getApp().globalData.username,
 			};
 		},
 		computed:{
@@ -123,10 +129,12 @@
 			// 保存个人信息后触发
 			uni.$on('saveUserInfo', (userData) => {
 			        // 全局变量变化时，重新赋值给计算属性
-			        this.avatarUrl = userData.userAvater;
+			        this.avatarUrl = userData.avatarUrl;
+					this.userName = getApp().globalData.username;
 			});
 		},
 		onShow() {
+			
 			uni.hideHomeButton();
 		},
 		onUnload() {  
@@ -144,6 +152,22 @@
 			gotoAbout(){
 				uni.navigateTo({
 				        url: '/pages/about/about' // 跳转到个人主页
+				});
+			},
+			test(){
+				console.log("tiaozhuan");
+				uni.navigateToMiniProgram({
+				  appId: 'wxc8125e5b4219faab',
+				  path: 'pages/ap/ap',
+				  envVersion: 'release',
+				  success(res) {
+				    // 打开成功
+				    console.log('跳转成功', res);
+				  },
+				  fail(err) {
+				    // 打开失败
+				    console.error('跳转失败', err);
+				  }
 				});
 			}
 		}
@@ -166,12 +190,18 @@
 			background-color: #FFE100;
 			width: 100hw;
 			margin-top: 30rpx;
-			.avatar{
-				max-width: 100rpx;
-				max-height: 100rpx;
-				margin-right: 50rpx;
-				border-radius: 15px;
+			.welcom{
+				display: flex;
+				align-items: center;
+				.avatar{
+					max-width: 100rpx;
+					max-height: 100rpx;
+					margin-right: 50rpx;
+					margin-left: 30rpx;
+					border-radius: 15px;
+				}
 			}
+			
 			.logo{
 				max-height: 70rpx;
 				margin-left: 30rpx;

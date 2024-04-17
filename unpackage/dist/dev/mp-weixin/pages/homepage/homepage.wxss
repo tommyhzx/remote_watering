@@ -37,10 +37,15 @@
   width: 100hw;
   margin-top: 30rpx;
 }
-.containor .header .avatar {
+.containor .header .welcom {
+  display: flex;
+  align-items: center;
+}
+.containor .header .welcom .avatar {
   max-width: 100rpx;
   max-height: 100rpx;
   margin-right: 50rpx;
+  margin-left: 30rpx;
   border-radius: 15px;
 }
 .containor .header .logo {

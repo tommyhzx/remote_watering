@@ -9,8 +9,11 @@
 			
 			<view class="input-modal">
 				<view>设备号</view>
-				<view class='deviceSN'>					
-					<input class="deviceSN-text" type="text" v-model="device.deviceSN" placeholder="请输入设备ID">
+				<view class='deviceSN'>		
+					<view>
+						<input class="deviceSN-text" type="text" v-model="device.deviceSN" placeholder="请输入设备ID">
+						<input class="deviceSN-text" type="text" v-model="device.deviceSN" placeholder="请输入设备密码">
+					</view>	
 					<image class='deviceScan' src='../../static/addDevice/device_select.png' @click="scanQRcode"></image>
 				</view>
 				<view>设备名</view>
@@ -35,7 +38,8 @@
 				device:{
 					deviceSN: '' ,// 输入的设备ID
 					deviceName:'',
-					devicePlace:''
+					devicePlace:'',
+					devicePassword:'',
 				}
 			};
 		},
@@ -62,7 +66,22 @@
 			scanQRcode(){
 				uni.scanCode({
 				    success: (res) => {
-						this.device.deviceSN = res.result;
+						let scanResult = res.result;
+						// 使用字符串的 split() 方法将扫描结果按照 '-' 分割成数组
+						let scanArray = scanResult.split('-');
+						if (scanArray.length >= 2) {
+						        let SNcode = scanArray[0]; // 第一个元素是 SN 码
+						        let password = scanArray[1]; // 第二个元素是密码
+						        // 将 SN 码和密码分别填充到对应的输入框中
+						        this.device.deviceSN = SNcode;
+						        this.device.password = password;
+						      } else {
+						        console.error('扫描结果格式不正确');
+						        uni.showToast({
+						          title: '扫描结果格式不正确',
+						          icon: 'none'
+						        });
+						      }
 						// 将扫描得到的信息存储到变量或者提交给后台
 						// 在这里可以添加逻辑处理扫描结果的操作
 					},
@@ -106,17 +125,18 @@
 				display: flex;
 				flex-direction: row;
 				justify-content: space-between;
+				align-items: center;
 				.deviceSN-text{
 				  border: 1px solid #bfbfbf; /* Add border */
 				  border-radius: 5px;
 				  padding: 1px;
 				  margin-bottom: 20px;
 				  height: 80rpx;
-				  width: 400rpx;
+				  width: 350rpx;
 				}
 				.deviceScan{
-				  width: 90rpx;
-				  height: 90rpx;
+				  width: 120rpx;
+				  height: 120rpx;
 				}
 			}
 			.input-text{

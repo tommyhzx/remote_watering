@@ -30,9 +30,6 @@ const _sfc_main = {
       this.userInfo.userName = event.target.value;
     },
     save() {
-      getApp().globalData.userAvater = this.userInfo.avatarUrl;
-      getApp().globalData.username = this.userInfo.userName;
-      common_vendor.index.$emit("saveUserInfo", this.userInfo);
       console.log("save user WxOpenId is:", getApp().globalData.WxOpenId);
       if (this.tempUrl != "") {
         common_vendor.index.getFileSystemManager().getFileInfo({
@@ -69,6 +66,9 @@ const _sfc_main = {
           }
         });
       }
+      getApp().globalData.userAvater = this.userInfo.avatarUrl;
+      getApp().globalData.username = this.userInfo.userName;
+      common_vendor.index.$emit("saveUserInfo", this.userInfo);
       common_vendor.Ws.callFunction({
         name: "saveUserInfo",
         data: {

@@ -8,7 +8,8 @@ const _sfc_main = {
         deviceSN: "",
         // 输入的设备ID
         deviceName: "",
-        devicePlace: ""
+        devicePlace: "",
+        devicePassword: ""
       }
     };
   },
@@ -36,7 +37,20 @@ const _sfc_main = {
     scanQRcode() {
       common_vendor.index.scanCode({
         success: (res) => {
-          this.device.deviceSN = res.result;
+          let scanResult = res.result;
+          let scanArray = scanResult.split("-");
+          if (scanArray.length >= 2) {
+            let SNcode = scanArray[0];
+            let password = scanArray[1];
+            this.device.deviceSN = SNcode;
+            this.device.password = password;
+          } else {
+            console.error("扫描结果格式不正确");
+            common_vendor.index.showToast({
+              title: "扫描结果格式不正确",
+              icon: "none"
+            });
+          }
         },
         fail: (err) => {
           console.error(err);
@@ -53,13 +67,15 @@ function _sfc_render(_ctx, _cache, $props, $setup, $data, $options) {
   return {
     a: $data.device.deviceSN,
     b: common_vendor.o(($event) => $data.device.deviceSN = $event.detail.value),
-    c: common_vendor.o((...args) => $options.scanQRcode && $options.scanQRcode(...args)),
-    d: $data.device.deviceName,
-    e: common_vendor.o(($event) => $data.device.deviceName = $event.detail.value),
-    f: $data.device.devicePlace,
-    g: common_vendor.o(($event) => $data.device.devicePlace = $event.detail.value),
-    h: common_vendor.o((...args) => $options.confirm && $options.confirm(...args)),
-    i: common_vendor.o((...args) => $options.cancel && $options.cancel(...args))
+    c: $data.device.deviceSN,
+    d: common_vendor.o(($event) => $data.device.deviceSN = $event.detail.value),
+    e: common_vendor.o((...args) => $options.scanQRcode && $options.scanQRcode(...args)),
+    f: $data.device.deviceName,
+    g: common_vendor.o(($event) => $data.device.deviceName = $event.detail.value),
+    h: $data.device.devicePlace,
+    i: common_vendor.o(($event) => $data.device.devicePlace = $event.detail.value),
+    j: common_vendor.o((...args) => $options.confirm && $options.confirm(...args)),
+    k: common_vendor.o((...args) => $options.cancel && $options.cancel(...args))
   };
 }
 const MiniProgramPage = /* @__PURE__ */ common_vendor._export_sfc(_sfc_main, [["render", _sfc_render], ["__file", "/Users/tommybei/software/code_project/uniapp_project/warteringCloud/pages/addDevice/addDevice.vue"]]);
