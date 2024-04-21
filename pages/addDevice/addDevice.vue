@@ -12,7 +12,7 @@
 				<view class='deviceSN'>		
 					<view>
 						<input class="deviceSN-text" type="text" v-model="device.deviceSN" placeholder="请输入设备ID">
-						<input class="deviceSN-text" type="text" v-model="device.devicePassword" placeholder="请输入设备密码">
+						<input class="deviceSN-text" type="password" v-model="device.devicePassword" placeholder="请输入设备密码">
 					</view>	
 					<image class='deviceScan' src='../../static/addDevice/device_select.png' @click="scanQRcode"></image>
 				</view>
@@ -51,11 +51,32 @@
 						title:"请填写设备信息"
 					})
 					return;
-				}	
-				uni.$emit("addDevice",deviceData);	
-				uni.navigateBack({
-					delta: 1 ,// 返回上一级页面
-				});
+				};
+				//查询数据库校验设备密码
+				uniCloud.callFunction({
+					name:"checkDevicePassword",
+					data:{
+						deviceSN:this.device.deviceSN,
+						devicePassword:this.device.devicePassword,
+					}
+				}).then(res => {
+					if(res.result.code == 0){
+						//
+						console.log("checkDevicePassword成功",res.result);
+						uni.$emit("addDevice",deviceData);
+						uni.navigateBack({
+							delta: 1 ,// 返回上一级页面
+						});
+					}else{
+						uni.showToast({
+						  title: res.result.msg,
+						  icon: 'none'
+						});
+						console.log("checkDevicePassword失败",res.result.msg);
+					}
+				})
+				
+				
 				
 			},
 			cancel(){
@@ -74,7 +95,7 @@
 						        let password = scanArray[1]; // 第二个元素是密码
 						        // 将 SN 码和密码分别填充到对应的输入框中
 						        this.device.deviceSN = SNcode;
-						        this.device.password = password;
+						        this.device.devicePassword = password;
 						      } else {
 						        console.error('扫描结果格式不正确');
 						        uni.showToast({
@@ -164,7 +185,4 @@
 			}
 		}
 	}
-	
-	
-
 </style>

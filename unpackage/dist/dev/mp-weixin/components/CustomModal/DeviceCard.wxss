@@ -27,9 +27,10 @@
   background-color: #ffffff;
   display: flex;
   flex-direction: column;
-  justify-content: space-around;
+  justify-content: space-between;
   align-items: center;
   height: 100%;
+  padding-bottom: 300rpx;
 }
 .containor .deviceInfo {
   display: flex;
@@ -41,7 +42,7 @@
 .containor .deviceInfo .device-pic {
   max-width: 250rpx;
   max-height: 250rpx;
-  margin: 20rpx;
+  margin: 10rpx;
 }
 .containor .deviceInfo .device-text {
   margin: 5rpx;
@@ -77,5 +78,6 @@
 }
 .containor .delete-pic {
   height: 50rpx;
-  margin-top: 30rpx;
+  margin-top: 10rpx;
+  margin-bottom: 100rpx;
 }

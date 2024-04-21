@@ -11,8 +11,8 @@
 			</view>
 			<view class="wifi-containor">
 				<view class="wifi">					
-					<image class="wifi-logo" src="/static/pic/WIFI.png" mode="heightFix"></image>
-					<text class="wifi-text">已连接</text>
+					<image class="wifi-logo" :src="connectStatusScr" mode="heightFix"></image>
+					<text class="wifi-text">{{connectStatus}}</text>
 				</view>
 			</view>
 			<view class="button-containor">
@@ -32,7 +32,9 @@
 	export default {
 		data() {
 			return {
-				warteringimageSrc:"../../static/deviceCard/startwartering.png"
+				warteringimageSrc:"../../static/deviceCard/startwartering.png",
+				connectStatusScr:"../../static/deviceCard/wifi_disconnect.png",
+				connectStatus:"离线"
 			};
 		},
 		props:{
@@ -41,6 +43,12 @@
 				deviceName:String,
 				devicePlace:String,	
 			}					
+		},
+		mounted(){
+			// 在页面加载后，每隔5秒执行一次获取设备连接状态的操作
+			setInterval(() => {
+			  this.getDeviceConnectionStatus();
+			}, 5000);
 		},
 		methods:{
 			onWaterring(device){
@@ -97,7 +105,43 @@
 				        }
 				    }
 				});
-			}
+			},
+			
+			// 定义获取设备连接状态的方法
+			async getDeviceConnectionStatus() {
+			  try {
+				// 发送请求获取设备连接状态，并处理获取到的状态
+				console.log("获取设备连接状态",this.device.deviceSN);
+				uni.request({
+				  url: 'https://apis.bemfa.com/va/online', //api接口，详见接入文档
+				  method:"GET",
+				  data: {  //请求字段，详见巴法云接入文档，http接口
+				    uid: "c2421290f7d14fa38251e5f77aac931a",
+				    topic: this.device.deviceSN,
+					type:3,
+				  },
+				  header: {
+				    'content-type': "application/x-www-form-urlencoded"
+				  },
+				 success:res=>{
+				   console.log("getDeviceConnectionStatus发送成功",res.data);
+				   //请求成功
+				   if(res.data.code == 0){
+					   if(res.data.data == true){ //已连接
+						   this.connectStatusScr = "../../static/deviceCard/connect.png";
+						   this.connectStatus = "z在线";
+					   }else{
+						   this.connectStatusScr = "../../static/deviceCard/wifi_disconnect.png";
+						   this.connectStatus = "离线";
+					   }
+				   }
+				 } 
+				});
+				// 示例代码...
+			  } catch (error) {
+				console.error('获取设备连接状态失败：', error);
+			  }
+			},
 		},
 	}
 </script>
@@ -107,9 +151,10 @@
 		background-color: #ffffff;
 		display: flex;
 		flex-direction: column;
-		justify-content: space-around;
+		justify-content: space-between;
 		align-items: center;
 		height: 100%;
+		padding-bottom: 300rpx;
 		.deviceInfo{
 			//height: 250rpx;
 			display: flex;
@@ -120,7 +165,7 @@
 			.device-pic{
 				max-width: 250rpx;
 				max-height: 250rpx;
-				margin: 20rpx;
+				margin: 10rpx;
 			}
 			.device-text{
 				margin: 5rpx;
@@ -160,7 +205,8 @@
 		}
 		.delete-pic{
 			height: 50rpx;
-			margin-top: 30rpx;
+			margin-top: 10rpx;
+			margin-bottom: 100rpx;
 		}
 	}	
 </style>

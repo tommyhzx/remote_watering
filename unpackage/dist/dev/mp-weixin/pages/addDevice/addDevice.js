@@ -22,10 +22,27 @@ const _sfc_main = {
         });
         return;
       }
-      common_vendor.index.$emit("addDevice", deviceData);
-      common_vendor.index.navigateBack({
-        delta: 1
-        // 返回上一级页面
+      common_vendor.Ws.callFunction({
+        name: "checkDevicePassword",
+        data: {
+          deviceSN: this.device.deviceSN,
+          devicePassword: this.device.devicePassword
+        }
+      }).then((res) => {
+        if (res.result.code == 0) {
+          console.log("checkDevicePassword成功", res.result);
+          common_vendor.index.$emit("addDevice", deviceData);
+          common_vendor.index.navigateBack({
+            delta: 1
+            // 返回上一级页面
+          });
+        } else {
+          common_vendor.index.showToast({
+            title: res.result.msg,
+            icon: "none"
+          });
+          console.log("checkDevicePassword失败", res.result.msg);
+        }
       });
     },
     cancel() {
@@ -43,7 +60,7 @@ const _sfc_main = {
             let SNcode = scanArray[0];
             let password = scanArray[1];
             this.device.deviceSN = SNcode;
-            this.device.password = password;
+            this.device.devicePassword = password;
           } else {
             console.error("扫描结果格式不正确");
             common_vendor.index.showToast({
