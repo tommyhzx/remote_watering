@@ -1,9 +1,9 @@
 <template>
 	<view class="containor">	
 		<view class="header">
-			<image class="logo" src="/static/homepage/add_pic.png" @click="addDevice" mode="heightFix"/>
+			<image class="logo" :src="addPicUrl" @click="addDevice" mode="heightFix"/>
 			<view class="peiwang">
-				<image class="peiwang-img" src="/static/homepage/peiwang.png" @click="peiwang" mode="heightFix"/>
+				<image class="peiwang-img" :src="peiwangUrl" @click="peiwang" mode="heightFix"/>
 				<text>一键配网</text>
 			</view>
 			
@@ -23,7 +23,7 @@
 			<!-- 若用户当前没有设备，则显示添加设备按钮 -->
 			<swiper-item class="add-device-btn-containor" v-if="showAddDeviceBtn">
 				<view  class="add-device-btn">
-					<image src="../../static/homepage/add-btn.png" @click="addDevice" mode="scaleToFill"></image>
+					<image :src="addBtnUrl" @click="addDevice" mode="scaleToFill"></image>
 					<text class="add-device-text">请添加设备</text>
 				</view>
 			</swiper-item>		
@@ -52,6 +52,9 @@
 
 				avatarUrl: getApp().globalData.userAvater || '/static/pic/defaultAvatar.png',// 存储用户头像地址
 				userName:getApp().globalData.username,
+				addPicUrl:"https://mp-0c7f093e-1151-46a0-9859-1d831d548ad6.cdn.bspapp.com/add_pic.png",
+				peiwangUrl:"https://mp-0c7f093e-1151-46a0-9859-1d831d548ad6.cdn.bspapp.com/peiwang.png",
+				addBtnUrl:"https://mp-0c7f093e-1151-46a0-9859-1d831d548ad6.cdn.bspapp.com/add-btn.png",
 			};
 		},
 		computed:{

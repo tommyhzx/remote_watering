@@ -3,7 +3,7 @@
 		<!-- <view class="deviceCardContainor" v-for="(deviceCard,index) in deviceCardList" :key="index"> -->
 			 <view class="device-card">							 
 				<view class="deviceInfo">
-					<image class="device-pic" src="/static/pic/device.png" mode="heightFix"></image>
+					<image class="device-pic" :src="deviceUrl" mode="heightFix"></image>
 					<text class="device-text">{{device.deviceSN}}</text>
 					<text class="device-text">{{device.deviceName}}</text>
 					<text class="device-place">地点：{{device.devicePlace}}</text>
@@ -22,7 +22,7 @@
 				</view>
 			</view>
 			<view class='delete-containor'>
-				<image class="delete-pic" src="/static/deviceCard/delte-pic.png" mode="heightFix" @click="deleteDevice"></image>
+				<image class="delete-pic" :src="deletePicUrl" mode="heightFix" @click="deleteDevice"></image>
 			</view>
 		<!-- </view> -->
 	</view>
@@ -34,7 +34,10 @@
 			return {
 				warteringimageSrc:"../../static/deviceCard/startwartering.png",
 				connectStatusScr:"../../static/deviceCard/wifi_disconnect.png",
-				connectStatus:"离线"
+				connectStatus:"离线",
+				
+				deviceUrl:"https://mp-0c7f093e-1151-46a0-9859-1d831d548ad6.cdn.bspapp.com/device.png",
+				deletePicUrl:"https://mp-0c7f093e-1151-46a0-9859-1d831d548ad6.cdn.bspapp.com/delte-pic.png",
 			};
 		},
 		props:{

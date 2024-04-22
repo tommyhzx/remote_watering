@@ -1,9 +1,9 @@
 <template>
 	<view class="imgContainer">
 		<view class="spacer"></view> <!-- 上方间隔 -->
-		<image class="logo" src="/static/pic/yumiLogo.png" mode="widthFix"/>
+		<image class="logo" :src="logoUrl" mode="widthFix"/>
 		<view class="spacer-buttom"></view> <!-- 下方间隔 -->
-		<image class="background" src="/static/pic/background.png" mode="widthFix"/>
+		<image class="background" :src="backGroundUrl" mode="widthFix"/>
 		<view class="text">登录即可控制智能设备</view>
 		<view class="text">畅享生活</view>
 		<view class="text">Login to control smart device</view>
@@ -20,7 +20,8 @@
 	export default {
 		data() {
 			return {
-								
+				logoUrl: 'https://mp-0c7f093e-1151-46a0-9859-1d831d548ad6.cdn.bspapp.com/yumiLogo.png',	
+				backGroundUrl:"https://mp-0c7f093e-1151-46a0-9859-1d831d548ad6.cdn.bspapp.com/background.png",
 			};
 		},
 		methods:{
@@ -37,7 +38,7 @@
 					if(openID == -1){
 						uni.showToast({
 							title: "获取openid失败" + JSON.stringify(openID),
-							image: "/static/logo.png"
+							image: ""
 						});
 						return;
 					}
@@ -67,7 +68,7 @@
 						console.error('获取用户信息失败：', err);
 						uni.showToast({
 							title: "获取用户信息失败" + JSON.stringify(err),
-							image: "/static/logo.png"
+							image: ""
 						});
 					}
 					uni.hideLoading();
@@ -84,7 +85,7 @@
 					console.error('userLogin() fail：', error);
 					uni.showToast({
 						title: "登录异常，请重试" + JSON.stringify(error),
-						image: "/static/logo.png"
+						image: ""
 					});
 				}
 			},		

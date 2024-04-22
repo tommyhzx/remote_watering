@@ -2,7 +2,10 @@
 const common_vendor = require("../../common/vendor.js");
 const _sfc_main = {
   data() {
-    return {};
+    return {
+      logoUrl: "https://mp-0c7f093e-1151-46a0-9859-1d831d548ad6.cdn.bspapp.com/yumiLogo.png",
+      backGroundUrl: "https://mp-0c7f093e-1151-46a0-9859-1d831d548ad6.cdn.bspapp.com/background.png"
+    };
   },
   methods: {
     async userLogin() {
@@ -15,7 +18,7 @@ const _sfc_main = {
         if (openID == -1) {
           common_vendor.index.showToast({
             title: "获取openid失败" + JSON.stringify(openID),
-            image: "/static/logo.png"
+            image: ""
           });
           return;
         }
@@ -41,7 +44,7 @@ const _sfc_main = {
           console.error("获取用户信息失败：", err);
           common_vendor.index.showToast({
             title: "获取用户信息失败" + JSON.stringify(err),
-            image: "/static/logo.png"
+            image: ""
           });
         }
         common_vendor.index.hideLoading();
@@ -56,7 +59,7 @@ const _sfc_main = {
         console.error("userLogin() fail：", error);
         common_vendor.index.showToast({
           title: "登录异常，请重试" + JSON.stringify(error),
-          image: "/static/logo.png"
+          image: ""
         });
       }
     },
@@ -140,7 +143,9 @@ const _sfc_main = {
 };
 function _sfc_render(_ctx, _cache, $props, $setup, $data, $options) {
   return {
-    a: common_vendor.o((...args) => $options.userLogin && $options.userLogin(...args))
+    a: $data.logoUrl,
+    b: $data.backGroundUrl,
+    c: common_vendor.o((...args) => $options.userLogin && $options.userLogin(...args))
   };
 }
 const MiniProgramPage = /* @__PURE__ */ common_vendor._export_sfc(_sfc_main, [["render", _sfc_render], ["__file", "/Users/tommybei/software/code_project/uniapp_project/warteringCloud/pages/login/login.vue"]]);

@@ -5,7 +5,9 @@ const _sfc_main = {
     return {
       warteringimageSrc: "../../static/deviceCard/startwartering.png",
       connectStatusScr: "../../static/deviceCard/wifi_disconnect.png",
-      connectStatus: "离线"
+      connectStatus: "离线",
+      deviceUrl: "https://mp-0c7f093e-1151-46a0-9859-1d831d548ad6.cdn.bspapp.com/device.png",
+      deletePicUrl: "https://mp-0c7f093e-1151-46a0-9859-1d831d548ad6.cdn.bspapp.com/delte-pic.png"
     };
   },
   props: {
@@ -114,15 +116,17 @@ const _sfc_main = {
 };
 function _sfc_render(_ctx, _cache, $props, $setup, $data, $options) {
   return {
-    a: common_vendor.t($props.device.deviceSN),
-    b: common_vendor.t($props.device.deviceName),
-    c: common_vendor.t($props.device.devicePlace),
-    d: $data.connectStatusScr,
-    e: common_vendor.t($data.connectStatus),
-    f: $data.warteringimageSrc,
-    g: common_vendor.o(($event) => $options.onWaterring($props.device)),
-    h: common_vendor.o(($event) => $options.stopWaterring($props.device)),
-    i: common_vendor.o((...args) => $options.deleteDevice && $options.deleteDevice(...args))
+    a: $data.deviceUrl,
+    b: common_vendor.t($props.device.deviceSN),
+    c: common_vendor.t($props.device.deviceName),
+    d: common_vendor.t($props.device.devicePlace),
+    e: $data.connectStatusScr,
+    f: common_vendor.t($data.connectStatus),
+    g: $data.warteringimageSrc,
+    h: common_vendor.o(($event) => $options.onWaterring($props.device)),
+    i: common_vendor.o(($event) => $options.stopWaterring($props.device)),
+    j: $data.deletePicUrl,
+    k: common_vendor.o((...args) => $options.deleteDevice && $options.deleteDevice(...args))
   };
 }
 const Component = /* @__PURE__ */ common_vendor._export_sfc(_sfc_main, [["render", _sfc_render], ["__file", "/Users/tommybei/software/code_project/uniapp_project/warteringCloud/components/CustomModal/DeviceCard.vue"]]);

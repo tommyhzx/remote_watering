@@ -18,7 +18,10 @@ const _sfc_main = {
       // 若swiper没有设备，则添加一个按钮
       avatarUrl: getApp().globalData.userAvater || "/static/pic/defaultAvatar.png",
       // 存储用户头像地址
-      userName: getApp().globalData.username
+      userName: getApp().globalData.username,
+      addPicUrl: "https://mp-0c7f093e-1151-46a0-9859-1d831d548ad6.cdn.bspapp.com/add_pic.png",
+      peiwangUrl: "https://mp-0c7f093e-1151-46a0-9859-1d831d548ad6.cdn.bspapp.com/peiwang.png",
+      addBtnUrl: "https://mp-0c7f093e-1151-46a0-9859-1d831d548ad6.cdn.bspapp.com/add-btn.png"
     };
   },
   computed: {
@@ -128,12 +131,14 @@ if (!Array) {
 }
 function _sfc_render(_ctx, _cache, $props, $setup, $data, $options) {
   return common_vendor.e({
-    a: common_vendor.o((...args) => $options.addDevice && $options.addDevice(...args)),
-    b: common_vendor.o((...args) => $options.peiwang && $options.peiwang(...args)),
-    c: common_vendor.t($data.userName),
-    d: $data.avatarUrl,
-    e: common_vendor.o((...args) => $options.gotoAbout && $options.gotoAbout(...args)),
-    f: common_vendor.f($data.devices, (device, index, i0) => {
+    a: $data.addPicUrl,
+    b: common_vendor.o((...args) => $options.addDevice && $options.addDevice(...args)),
+    c: $data.peiwangUrl,
+    d: common_vendor.o((...args) => $options.peiwang && $options.peiwang(...args)),
+    e: common_vendor.t($data.userName),
+    f: $data.avatarUrl,
+    g: common_vendor.o((...args) => $options.gotoAbout && $options.gotoAbout(...args)),
+    h: common_vendor.f($data.devices, (device, index, i0) => {
       return {
         a: "27eb7476-0-" + i0,
         b: common_vendor.p({
@@ -142,9 +147,10 @@ function _sfc_render(_ctx, _cache, $props, $setup, $data, $options) {
         c: index
       };
     }),
-    g: $options.showAddDeviceBtn
+    i: $options.showAddDeviceBtn
   }, $options.showAddDeviceBtn ? {
-    h: common_vendor.o((...args) => $options.addDevice && $options.addDevice(...args))
+    j: $data.addBtnUrl,
+    k: common_vendor.o((...args) => $options.addDevice && $options.addDevice(...args))
   } : {});
 }
 const MiniProgramPage = /* @__PURE__ */ common_vendor._export_sfc(_sfc_main, [["render", _sfc_render], ["__file", "/Users/tommybei/software/code_project/uniapp_project/warteringCloud/pages/homepage/homepage.vue"]]);
