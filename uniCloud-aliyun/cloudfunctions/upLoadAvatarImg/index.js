@@ -4,10 +4,6 @@ exports.main = async (event, context) => {
 	//event为客户端上传的参数
 	// console.log('event : ', event)
 	let {imageBase64,WxOpenId} = event;
-	// return {
-	// 	code: 0,
-	// 	msg: WxOpenId
-	// };
 	//去除编码头
 	let base64 = imageBase64.split(",")[1];
 	//获取文件后缀名

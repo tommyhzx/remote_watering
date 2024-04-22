@@ -52,6 +52,14 @@
   max-height: 70rpx;
   margin-left: 30rpx;
 }
+.containor .header .peiwang {
+  display: flex;
+  align-items: center;
+}
+.containor .header .peiwang-img {
+  max-height: 70rpx;
+  margin-left: 30rpx;
+}
 .containor .swiper {
   display: flex;
   align-items: center;

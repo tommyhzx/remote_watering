@@ -111,7 +111,7 @@
 			async getDeviceConnectionStatus() {
 			  try {
 				// 发送请求获取设备连接状态，并处理获取到的状态
-				console.log("获取设备连接状态",this.device.deviceSN);
+				// console.log("获取设备连接状态",this.device.deviceSN);
 				uni.request({
 				  url: 'https://apis.bemfa.com/va/online', //api接口，详见接入文档
 				  method:"GET",
@@ -124,7 +124,7 @@
 				    'content-type': "application/x-www-form-urlencoded"
 				  },
 				 success:res=>{
-				   console.log("getDeviceConnectionStatus发送成功",res.data);
+				   // console.log("getDeviceConnectionStatus发送成功",res.data);
 				   //请求成功
 				   if(res.data.code == 0){
 					   if(res.data.data == true){ //已连接

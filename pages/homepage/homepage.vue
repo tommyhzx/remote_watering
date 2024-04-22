@@ -2,6 +2,11 @@
 	<view class="containor">	
 		<view class="header">
 			<image class="logo" src="/static/homepage/add_pic.png" @click="addDevice" mode="heightFix"/>
+			<view class="peiwang">
+				<image class="peiwang-img" src="/static/homepage/peiwang.png" @click="peiwang" mode="heightFix"/>
+				<text>一键配网</text>
+			</view>
+			
 			<view class="welcom">
 				<text class="welcom-text">欢迎, {{userName}}</text>
 				<image class="avatar" :src='avatarUrl' @click="gotoAbout"/>
@@ -24,7 +29,6 @@
 			</swiper-item>		
 		</swiper>
 	</view>
-	<button @click="test">测试跳转</button>
 </template>
 
 <script>
@@ -146,8 +150,7 @@
 				        url: '/pages/about/about' // 跳转到个人主页
 				});
 			},
-			test(){
-				console.log("tiaozhuan");
+			peiwang(){
 				uni.navigateToMiniProgram({
 				  appId: 'wxc8125e5b4219faab',
 				  path: 'pages/ap/ap',
@@ -195,6 +198,14 @@
 			}
 			
 			.logo{
+				max-height: 70rpx;
+				margin-left: 30rpx;
+			}
+			.peiwang{
+				display: flex;
+				align-items: center;
+			}
+			.peiwang-img{
 				max-height: 70rpx;
 				margin-left: 30rpx;
 			}

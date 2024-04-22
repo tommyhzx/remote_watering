@@ -81,7 +81,6 @@ const _sfc_main = {
     // 定义获取设备连接状态的方法
     async getDeviceConnectionStatus() {
       try {
-        console.log("获取设备连接状态", this.device.deviceSN);
         common_vendor.index.request({
           url: "https://apis.bemfa.com/va/online",
           //api接口，详见接入文档
@@ -96,7 +95,6 @@ const _sfc_main = {
             "content-type": "application/x-www-form-urlencoded"
           },
           success: (res) => {
-            console.log("getDeviceConnectionStatus发送成功", res.data);
             if (res.data.code == 0) {
               if (res.data.data == true) {
                 this.connectStatusScr = "../../static/deviceCard/connect.png";

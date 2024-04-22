@@ -51,7 +51,8 @@
 					avatarUrl
 				} = e.detail;
 				this.tempUrl = avatarUrl;
-				console.log("userInfo:",e);
+				this.userInfo.avatarUrl = avatarUrl;
+				console.log("userInfo:",avatarUrl);
 			},
 			changeName(event){
 				this.userInfo.userName = event.target.value;
@@ -59,13 +60,11 @@
 			bindblur(event){
 				this.userInfo.userName = event.target.value;
 			},
-			save(){
-				
-				console.log("save user WxOpenId is:",getApp().globalData.WxOpenId);
-				if(this.tempUrl != ''){
-					
+			async save(){
+				if(this.userInfo.avatarUrl != ''){
+					//判断图像大小
 					uni.getFileSystemManager().getFileInfo({
-						filePath:this.tempUrl,
+						filePath:this.userInfo.avatarUrl,
 						success:res => {
 							if(res.size > 1024*1024){
 								return uni.showToast({
@@ -73,56 +72,62 @@
 									title:"图片不能超过1M"
 								})
 							}
-
-							uni.getFileSystemManager().readFile({
-								filePath:this.tempUrl,
-								encoding:"base64",
-								success:res => {								
-									let imageBase64 = 'data:image/jpg;base64,'+res.data;
-									console.log("读取头像文件",res);
-									uniCloud.callFunction({
-										name:"upLoadAvatarImg",
-										data:{
-											imageBase64:imageBase64,
-											WxOpenId:getApp().globalData.WxOpenId,
-										}
-									}).then(res => {
-										if(res.result.code == 0){
-											//获取最终数据库的url
-											this.userInfo.avatarUrl = res.result.msg;
-											console.log("上传成功",res.result);
-										}else{
-											console.log("上传失败",res.result.msg);
-										}
-									})
-								}
-							});
+						console.log("获取上传图像信息成功",res);
+						return;
 						}
 					});
-				}				
-				// 修改全局变量的地方
-				getApp().globalData.userAvater = this.userInfo.avatarUrl;
-				getApp().globalData.username = this.userInfo.userName;
-				uni.$emit('saveUserInfo', this.userInfo);
-				//保存数据库
-				uniCloud.callFunction({
-					name:"saveUserInfo",
-					data:{
-						WxOpenId : getApp().globalData.WxOpenId,
-						username : getApp().globalData.username,
-						userAvater : getApp().globalData.userAvater,
-					}
-				}).then(res => {
-					console.log("saveUserInfo log，",res.result.msg);
-					if(res.result.code != 0){
-						console.log("saveUserInfo Fail，",res.result.msg);
-					}				
-				});
-				
-				
-				uni.navigateBack({
-				 	url:'/pages/homepage/homepage'
-				});
+					//读取图片并转Base64保存数据库						
+					uni.getFileSystemManager().readFile({
+						filePath:this.userInfo.avatarUrl,
+						encoding:"base64",
+						success:res => {								
+							let imageBase64 = 'data:image/jpg;base64,'+res.data;
+							console.log("读取头像文件",res);
+							uniCloud.callFunction({
+								name:"upLoadAvatarImg",
+								data:{
+									imageBase64:imageBase64,
+									WxOpenId:getApp().globalData.WxOpenId,
+								}
+							}).then(result => {
+								if(result.result.code == 0){
+									//获取最终数据库的url
+									this.userInfo.avatarUrl = result.result.msg;
+									console.log("上传成功",result.result);
+									// 修改全局变量的地方
+									getApp().globalData.userAvater = this.userInfo.avatarUrl;
+									console.log("保存头像路径为",getApp().globalData.userAvater);
+									getApp().globalData.username = this.userInfo.userName;
+									uni.$emit('saveUserInfo', this.userInfo);	
+									//保存数据库
+									uniCloud.callFunction({
+										name:"saveUserInfo",
+										data:{
+											WxOpenId : getApp().globalData.WxOpenId,
+											username : getApp().globalData.username,
+											userAvater : getApp().globalData.userAvater,
+										}
+									}).then(res => {
+										console.log("saveUserInfo log：",res.result.msg);
+										if(res.result.code != 0){ 
+											console.log("saveUserInfo Fail，",res.result.msg);
+										}				
+									});		
+															
+									uni.navigateBack({
+									 	url:'/pages/homepage/homepage'
+									});
+								}else{
+									console.log("上传失败",result);
+									uni.showToast({
+										icon:"none",
+										title:"上传失败"
+									})
+								}
+							})
+						}
+					});				
+				}						
 			},
 			cancel(){
 				this.userInfo.avatarUrl = getApp().globalData.userAvater;

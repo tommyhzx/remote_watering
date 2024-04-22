@@ -21,7 +21,8 @@ const _sfc_main = {
         avatarUrl
       } = e.detail;
       this.tempUrl = avatarUrl;
-      console.log("userInfo:", e);
+      this.userInfo.avatarUrl = avatarUrl;
+      console.log("userInfo:", avatarUrl);
     },
     changeName(event) {
       this.userInfo.userName = event.target.value;
@@ -29,11 +30,10 @@ const _sfc_main = {
     bindblur(event) {
       this.userInfo.userName = event.target.value;
     },
-    save() {
-      console.log("save user WxOpenId is:", getApp().globalData.WxOpenId);
-      if (this.tempUrl != "") {
+    async save() {
+      if (this.userInfo.avatarUrl != "") {
         common_vendor.index.getFileSystemManager().getFileInfo({
-          filePath: this.tempUrl,
+          filePath: this.userInfo.avatarUrl,
           success: (res) => {
             if (res.size > 1024 * 1024) {
               return common_vendor.index.showToast({
@@ -41,50 +41,57 @@ const _sfc_main = {
                 title: "图片不能超过1M"
               });
             }
-            common_vendor.index.getFileSystemManager().readFile({
-              filePath: this.tempUrl,
-              encoding: "base64",
-              success: (res2) => {
-                let imageBase64 = "data:image/jpg;base64," + res2.data;
-                console.log("读取头像文件", res2);
+            console.log("获取上传图像信息成功", res);
+            return;
+          }
+        });
+        common_vendor.index.getFileSystemManager().readFile({
+          filePath: this.userInfo.avatarUrl,
+          encoding: "base64",
+          success: (res) => {
+            let imageBase64 = "data:image/jpg;base64," + res.data;
+            console.log("读取头像文件", res);
+            common_vendor.Ws.callFunction({
+              name: "upLoadAvatarImg",
+              data: {
+                imageBase64,
+                WxOpenId: getApp().globalData.WxOpenId
+              }
+            }).then((result) => {
+              if (result.result.code == 0) {
+                this.userInfo.avatarUrl = result.result.msg;
+                console.log("上传成功", result.result);
+                getApp().globalData.userAvater = this.userInfo.avatarUrl;
+                console.log("保存头像路径为", getApp().globalData.userAvater);
+                getApp().globalData.username = this.userInfo.userName;
+                common_vendor.index.$emit("saveUserInfo", this.userInfo);
                 common_vendor.Ws.callFunction({
-                  name: "upLoadAvatarImg",
+                  name: "saveUserInfo",
                   data: {
-                    imageBase64,
-                    WxOpenId: getApp().globalData.WxOpenId
+                    WxOpenId: getApp().globalData.WxOpenId,
+                    username: getApp().globalData.username,
+                    userAvater: getApp().globalData.userAvater
                   }
-                }).then((res3) => {
-                  if (res3.result.code == 0) {
-                    this.userInfo.avatarUrl = res3.result.msg;
-                    console.log("上传成功", res3.result);
-                  } else {
-                    console.log("上传失败", res3.result.msg);
+                }).then((res2) => {
+                  console.log("saveUserInfo log：", res2.result.msg);
+                  if (res2.result.code != 0) {
+                    console.log("saveUserInfo Fail，", res2.result.msg);
                   }
+                });
+                common_vendor.index.navigateBack({
+                  url: "/pages/homepage/homepage"
+                });
+              } else {
+                console.log("上传失败", result);
+                common_vendor.index.showToast({
+                  icon: "none",
+                  title: "上传失败"
                 });
               }
             });
           }
         });
       }
-      getApp().globalData.userAvater = this.userInfo.avatarUrl;
-      getApp().globalData.username = this.userInfo.userName;
-      common_vendor.index.$emit("saveUserInfo", this.userInfo);
-      common_vendor.Ws.callFunction({
-        name: "saveUserInfo",
-        data: {
-          WxOpenId: getApp().globalData.WxOpenId,
-          username: getApp().globalData.username,
-          userAvater: getApp().globalData.userAvater
-        }
-      }).then((res) => {
-        console.log("saveUserInfo log，", res.result.msg);
-        if (res.result.code != 0) {
-          console.log("saveUserInfo Fail，", res.result.msg);
-        }
-      });
-      common_vendor.index.navigateBack({
-        url: "/pages/homepage/homepage"
-      });
     },
     cancel() {
       this.userInfo.avatarUrl = getApp().globalData.userAvater;

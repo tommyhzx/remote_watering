@@ -107,8 +107,7 @@ const _sfc_main = {
         // 跳转到个人主页
       });
     },
-    test() {
-      console.log("tiaozhuan");
+    peiwang() {
       common_vendor.index.navigateToMiniProgram({
         appId: "wxc8125e5b4219faab",
         path: "pages/ap/ap",
@@ -130,10 +129,11 @@ if (!Array) {
 function _sfc_render(_ctx, _cache, $props, $setup, $data, $options) {
   return common_vendor.e({
     a: common_vendor.o((...args) => $options.addDevice && $options.addDevice(...args)),
-    b: common_vendor.t($data.userName),
-    c: $data.avatarUrl,
-    d: common_vendor.o((...args) => $options.gotoAbout && $options.gotoAbout(...args)),
-    e: common_vendor.f($data.devices, (device, index, i0) => {
+    b: common_vendor.o((...args) => $options.peiwang && $options.peiwang(...args)),
+    c: common_vendor.t($data.userName),
+    d: $data.avatarUrl,
+    e: common_vendor.o((...args) => $options.gotoAbout && $options.gotoAbout(...args)),
+    f: common_vendor.f($data.devices, (device, index, i0) => {
       return {
         a: "27eb7476-0-" + i0,
         b: common_vendor.p({
@@ -142,12 +142,10 @@ function _sfc_render(_ctx, _cache, $props, $setup, $data, $options) {
         c: index
       };
     }),
-    f: $options.showAddDeviceBtn
+    g: $options.showAddDeviceBtn
   }, $options.showAddDeviceBtn ? {
-    g: common_vendor.o((...args) => $options.addDevice && $options.addDevice(...args))
-  } : {}, {
-    h: common_vendor.o((...args) => $options.test && $options.test(...args))
-  });
+    h: common_vendor.o((...args) => $options.addDevice && $options.addDevice(...args))
+  } : {});
 }
 const MiniProgramPage = /* @__PURE__ */ common_vendor._export_sfc(_sfc_main, [["render", _sfc_render], ["__file", "/Users/tommybei/software/code_project/uniapp_project/warteringCloud/pages/homepage/homepage.vue"]]);
 wx.createPage(MiniProgramPage);
