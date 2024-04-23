@@ -100,7 +100,7 @@ const _sfc_main = {
             if (res.data.code == 0) {
               if (res.data.data == true) {
                 this.connectStatusScr = "../../static/deviceCard/connect.png";
-                this.connectStatus = "z在线";
+                this.connectStatus = "在线";
               } else {
                 this.connectStatusScr = "../../static/deviceCard/wifi_disconnect.png";
                 this.connectStatus = "离线";

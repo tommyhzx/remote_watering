@@ -37,6 +37,7 @@
 					userName: getApp().globalData.username,
 				},
 				tempUrl:'',
+				tempName:"",
 			};
 		},
 		methods:{
@@ -55,13 +56,16 @@
 				console.log("userInfo:",avatarUrl);
 			},
 			changeName(event){
+				this.tempName = event.target.value;
 				this.userInfo.userName = event.target.value;
 			},
 			bindblur(event){
+				this.tempName = event.target.value;
 				this.userInfo.userName = event.target.value;
 			},
-			async save(){
-				if(this.userInfo.avatarUrl != ''){
+			save(){
+				//更改头像
+				if(this.tempUrl != ''){
 					//判断图像大小
 					uni.getFileSystemManager().getFileInfo({
 						filePath:this.userInfo.avatarUrl,
@@ -93,26 +97,7 @@
 								if(result.result.code == 0){
 									//获取最终数据库的url
 									this.userInfo.avatarUrl = result.result.msg;
-									console.log("上传成功",result.result);
-									// 修改全局变量的地方
-									getApp().globalData.userAvater = this.userInfo.avatarUrl;
-									console.log("保存头像路径为",getApp().globalData.userAvater);
-									getApp().globalData.username = this.userInfo.userName;
-									uni.$emit('saveUserInfo', this.userInfo);	
-									//保存数据库
-									uniCloud.callFunction({
-										name:"saveUserInfo",
-										data:{
-											WxOpenId : getApp().globalData.WxOpenId,
-											username : getApp().globalData.username,
-											userAvater : getApp().globalData.userAvater,
-										}
-									}).then(res => {
-										console.log("saveUserInfo log：",res.result.msg);
-										if(res.result.code != 0){ 
-											console.log("saveUserInfo Fail，",res.result.msg);
-										}				
-									});		
+									this.saveUserInfo();
 															
 									uni.navigateBack({
 									 	url:'/pages/homepage/homepage'
@@ -125,9 +110,42 @@
 									})
 								}
 							})
+						},
+						fail:err => {
+							console.error("读取文件失败:", err);
 						}
 					});				
+				}else if(this.tempName != ''){						
+					this.saveUserInfo();						
+					uni.navigateBack({
+					 	url:'/pages/homepage/homepage'
+					});
+				}else{
+					console.log("头像和名字未修改",this.tempName);
+					uni.showToast({
+						icon:"none",
+						title:"未修改信息"
+					})
 				}						
+			},
+			saveUserInfo(){
+				getApp().globalData.userAvater = this.userInfo.avatarUrl;
+				getApp().globalData.username = this.userInfo.userName;
+				uni.$emit('saveUserInfo', this.userInfo);
+				//保存数据库
+				uniCloud.callFunction({
+					name:"saveUserInfo",
+					data:{
+						WxOpenId : getApp().globalData.WxOpenId,
+						username : getApp().globalData.username,
+						userAvater : getApp().globalData.userAvater,
+					}
+				}).then(res => {
+					console.log("saveUserInfo log：",res.result.msg);
+					if(res.result.code != 0){ 
+						console.log("saveUserInfo Fail，",res.result.msg);
+					}				
+				});	
 			},
 			cancel(){
 				this.userInfo.avatarUrl = getApp().globalData.userAvater;

@@ -7,7 +7,8 @@ const _sfc_main = {
         avatarUrl: getApp().globalData.userAvater || "/static/pic/defaultAvatar.png",
         userName: getApp().globalData.username
       },
-      tempUrl: ""
+      tempUrl: "",
+      tempName: ""
     };
   },
   methods: {
@@ -25,13 +26,15 @@ const _sfc_main = {
       console.log("userInfo:", avatarUrl);
     },
     changeName(event) {
+      this.tempName = event.target.value;
       this.userInfo.userName = event.target.value;
     },
     bindblur(event) {
+      this.tempName = event.target.value;
       this.userInfo.userName = event.target.value;
     },
-    async save() {
-      if (this.userInfo.avatarUrl != "") {
+    save() {
+      if (this.tempUrl != "") {
         common_vendor.index.getFileSystemManager().getFileInfo({
           filePath: this.userInfo.avatarUrl,
           success: (res) => {
@@ -60,24 +63,7 @@ const _sfc_main = {
             }).then((result) => {
               if (result.result.code == 0) {
                 this.userInfo.avatarUrl = result.result.msg;
-                console.log("上传成功", result.result);
-                getApp().globalData.userAvater = this.userInfo.avatarUrl;
-                console.log("保存头像路径为", getApp().globalData.userAvater);
-                getApp().globalData.username = this.userInfo.userName;
-                common_vendor.index.$emit("saveUserInfo", this.userInfo);
-                common_vendor.Ws.callFunction({
-                  name: "saveUserInfo",
-                  data: {
-                    WxOpenId: getApp().globalData.WxOpenId,
-                    username: getApp().globalData.username,
-                    userAvater: getApp().globalData.userAvater
-                  }
-                }).then((res2) => {
-                  console.log("saveUserInfo log：", res2.result.msg);
-                  if (res2.result.code != 0) {
-                    console.log("saveUserInfo Fail，", res2.result.msg);
-                  }
-                });
+                this.saveUserInfo();
                 common_vendor.index.navigateBack({
                   url: "/pages/homepage/homepage"
                 });
@@ -89,9 +75,41 @@ const _sfc_main = {
                 });
               }
             });
+          },
+          fail: (err) => {
+            console.error("读取文件失败:", err);
           }
         });
+      } else if (this.tempName != "") {
+        this.saveUserInfo();
+        common_vendor.index.navigateBack({
+          url: "/pages/homepage/homepage"
+        });
+      } else {
+        console.log("头像和名字未修改", this.tempName);
+        common_vendor.index.showToast({
+          icon: "none",
+          title: "未修改信息"
+        });
       }
+    },
+    saveUserInfo() {
+      getApp().globalData.userAvater = this.userInfo.avatarUrl;
+      getApp().globalData.username = this.userInfo.userName;
+      common_vendor.index.$emit("saveUserInfo", this.userInfo);
+      common_vendor.Ws.callFunction({
+        name: "saveUserInfo",
+        data: {
+          WxOpenId: getApp().globalData.WxOpenId,
+          username: getApp().globalData.username,
+          userAvater: getApp().globalData.userAvater
+        }
+      }).then((res) => {
+        console.log("saveUserInfo log：", res.result.msg);
+        if (res.result.code != 0) {
+          console.log("saveUserInfo Fail，", res.result.msg);
+        }
+      });
     },
     cancel() {
       this.userInfo.avatarUrl = getApp().globalData.userAvater;
