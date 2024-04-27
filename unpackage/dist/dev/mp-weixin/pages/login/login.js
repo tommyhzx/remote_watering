@@ -39,6 +39,7 @@ const _sfc_main = {
           getApp().globalData.username = userInfo.username;
           getApp().globalData.userAvater = userInfo.userAvater;
           getApp().globalData.userTel = userInfo.userTel;
+          getApp().globalData.userID = userInfo.userID;
         } catch (err) {
           common_vendor.index.hideLoading();
           console.error("获取用户信息失败：", err);
@@ -139,6 +140,8 @@ const _sfc_main = {
     }
   },
   onLoad() {
+    const datatime = "ID" + Date.now();
+    console.log("onLoad time:", datatime);
   }
 };
 function _sfc_render(_ctx, _cache, $props, $setup, $data, $options) {

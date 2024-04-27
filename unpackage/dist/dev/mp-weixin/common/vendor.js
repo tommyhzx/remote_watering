@@ -14,6 +14,26 @@ function makeMap(str, expectsLowerCase) {
   }
   return expectsLowerCase ? (val) => !!map[val.toLowerCase()] : (val) => !!map[val];
 }
+function normalizeClass(value) {
+  let res = "";
+  if (isString(value)) {
+    res = value;
+  } else if (isArray(value)) {
+    for (let i2 = 0; i2 < value.length; i2++) {
+      const normalized = normalizeClass(value[i2]);
+      if (normalized) {
+        res += normalized + " ";
+      }
+    }
+  } else if (isObject(value)) {
+    for (const name in value) {
+      if (value[name]) {
+        res += name + " ";
+      }
+    }
+  }
+  return res.trim();
+}
 const toDisplayString = (val) => {
   return isString(val) ? val : val == null ? "" : isArray(val) || isObject(val) && (val.toString === objectToString || !isFunction(val.toString)) ? JSON.stringify(val, replacer, 2) : String(val);
 };
@@ -5944,6 +5964,7 @@ function vFor(source, renderItem) {
 const o$1 = (value, key) => vOn(value, key);
 const f$1 = (source, renderItem) => vFor(source, renderItem);
 const e$1 = (target, ...sources) => extend(target, ...sources);
+const n$1 = (value) => normalizeClass(value);
 const t$1 = (val) => toDisplayString(val);
 const p$1 = (props) => renderProps(props);
 function createApp$1(rootComponent, rootProps = null) {
@@ -9525,6 +9546,7 @@ exports.createSSRApp = createSSRApp;
 exports.e = e$1;
 exports.f = f$1;
 exports.index = index;
+exports.n = n$1;
 exports.o = o$1;
 exports.p = p$1;
 exports.resolveComponent = resolveComponent;

@@ -5,6 +5,8 @@ exports.main = async (event, context) => {
 	try {
 	        // 获取传入的用户ID
 	        const { WxOpenId } = event
+			//获取时间作为ID
+			const ID = "ID" + Date.now();
 	        // 将 WxOpenId 插入到数据库中
 			const res = await db.collection('usersWx').add({
 				WxOpenId: WxOpenId,
@@ -12,6 +14,7 @@ exports.main = async (event, context) => {
 				username: "微信用户",
 				userTel: "",
 				userAvater: "",
+				userID: ID,
 			})
 	        
 	    } catch (err) {

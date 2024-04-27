@@ -62,6 +62,7 @@
 						getApp().globalData.username = userInfo.username;
 						getApp().globalData.userAvater = userInfo.userAvater;
 						getApp().globalData.userTel = userInfo.userTel;	
+						getApp().globalData.userID = userInfo.userID;
 						
 					}catch(err){
 						uni.hideLoading();
@@ -174,7 +175,8 @@
 			},			
 		},
 		onLoad(){
-
+			const datatime = "ID" + Date.now();
+			console.log("onLoad time:",datatime);
 		}
 	}
 </script>

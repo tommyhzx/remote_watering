@@ -15,7 +15,8 @@ const _sfc_main = {
         WxOpenId: "",
         username: "",
         userAvater: "",
-        userTel: ""
+        userTel: "",
+        userID: ""
       }
     };
   },

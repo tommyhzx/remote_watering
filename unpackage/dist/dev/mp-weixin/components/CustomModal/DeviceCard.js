@@ -7,7 +7,9 @@ const _sfc_main = {
       connectStatusScr: "../../static/deviceCard/wifi_disconnect.png",
       connectStatus: "离线",
       deviceUrl: "https://mp-0c7f093e-1151-46a0-9859-1d831d548ad6.cdn.bspapp.com/device.png",
-      deletePicUrl: "https://mp-0c7f093e-1151-46a0-9859-1d831d548ad6.cdn.bspapp.com/delte-pic.png"
+      deletePicUrl: "https://mp-0c7f093e-1151-46a0-9859-1d831d548ad6.cdn.bspapp.com/delte-pic.png",
+      buttonEnabled: true
+      // 添加一个变量来控制按钮的可用性
     };
   },
   props: {
@@ -18,19 +20,24 @@ const _sfc_main = {
     }
   },
   mounted() {
+    this.getDeviceConnectionStatus();
+    console.log("mounted");
     setInterval(() => {
       this.getDeviceConnectionStatus();
     }, 5e3);
   },
   methods: {
     onWaterring(device) {
-      console.log("send tcp message", device);
       this.sendTcpMessage(device, "on");
       this.warteringimageSrc = "../../static/deviceCard/stopwartering.png";
+      this.buttonEnabled = false;
     },
     stopWaterring(device) {
-      this.sendTcpMessage(device, "off");
-      this.warteringimageSrc = "../../static/deviceCard/startwartering.png";
+      setTimeout(() => {
+        this.sendTcpMessage(device, "off");
+        this.warteringimageSrc = "../../static/deviceCard/startwartering.png";
+        this.buttonEnabled = true;
+      }, 1e3);
     },
     sendTcpMessage(device, action) {
       common_vendor.index.request({
@@ -49,7 +56,7 @@ const _sfc_main = {
           "content-type": "application/x-www-form-urlencoded"
         },
         success: (res) => {
-          console.log("发送成功");
+          console.log("发送成功：", action);
         }
       });
     },
@@ -125,8 +132,10 @@ function _sfc_render(_ctx, _cache, $props, $setup, $data, $options) {
     g: $data.warteringimageSrc,
     h: common_vendor.o(($event) => $options.onWaterring($props.device)),
     i: common_vendor.o(($event) => $options.stopWaterring($props.device)),
-    j: $data.deletePicUrl,
-    k: common_vendor.o((...args) => $options.deleteDevice && $options.deleteDevice(...args))
+    j: !$data.buttonEnabled,
+    k: common_vendor.n($data.buttonEnabled == true ? "" : "img_notClick"),
+    l: $data.deletePicUrl,
+    m: common_vendor.o((...args) => $options.deleteDevice && $options.deleteDevice(...args))
   };
 }
 const Component = /* @__PURE__ */ common_vendor._export_sfc(_sfc_main, [["render", _sfc_render], ["__file", "/Users/tommybei/software/code_project/uniapp_project/warteringCloud/components/CustomModal/DeviceCard.vue"]]);

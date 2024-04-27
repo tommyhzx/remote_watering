@@ -13,7 +13,7 @@
 		</view>
 		<view class="account">
 			<text>账号</text>
-			<text>12345678</text>
+			<text>{{userInfo.userID}}</text>
 		</view>
 		<view class="name-container">
 			<text class="nameText">姓名</text>
@@ -35,6 +35,7 @@
 				userInfo: {
 					avatarUrl: getApp().globalData.userAvater || '/static/pic/defaultAvatar.png',
 					userName: getApp().globalData.username,
+					userID: getApp().globalData.userID,
 				},
 				tempUrl:'',
 				tempName:"",

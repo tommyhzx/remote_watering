@@ -7,6 +7,7 @@
 						username:'',
 						userAvater:'',
 						userTel:'',
+						userID:'',
 				}
 			};
 		},

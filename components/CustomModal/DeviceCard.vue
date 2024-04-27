@@ -16,9 +16,10 @@
 				</view>
 			</view>
 			<view class="button-containor">
-				<view class='pic-button'>
+				<view class='pic-button' :class="buttonEnabled == true ?'':'img_notClick'">
 					<image class="col2Image" :src="warteringimageSrc" mode="heightFix"
-					@touchstart="onWaterring(device)" @touchend="stopWaterring(device)"></image>
+					@touchstart="onWaterring(device)" @touchend="stopWaterring(device)"
+					:disabled="!buttonEnabled"></image>
 				</view>
 			</view>
 			<view class='delete-containor'>
@@ -38,6 +39,7 @@
 				
 				deviceUrl:"https://mp-0c7f093e-1151-46a0-9859-1d831d548ad6.cdn.bspapp.com/device.png",
 				deletePicUrl:"https://mp-0c7f093e-1151-46a0-9859-1d831d548ad6.cdn.bspapp.com/delte-pic.png",
+				buttonEnabled: true, // 添加一个变量来控制按钮的可用性
 			};
 		},
 		props:{
@@ -49,19 +51,26 @@
 		},
 		mounted(){
 			// 在页面加载后，每隔5秒执行一次获取设备连接状态的操作
+			this.getDeviceConnectionStatus();
+			console.log("mounted");
 			setInterval(() => {
 			  this.getDeviceConnectionStatus();
 			}, 5000);
 		},
 		methods:{
 			onWaterring(device){
-				console.log("send tcp message",device)
-				this.sendTcpMessage(device,"on");
+				// console.log("send tcp message",device)
+				this.sendTcpMessage(device,"on");			
 				this.warteringimageSrc = "../../static/deviceCard/stopwartering.png";
+				this.buttonEnabled = false;
 			},
 			stopWaterring(device){
-				this.sendTcpMessage(device,"off");
-				this.warteringimageSrc = "../../static/deviceCard/startwartering.png";
+				setTimeout(() => {
+				  // 这里写要延时执行的代码
+				  this.sendTcpMessage(device,"off");
+				  this.warteringimageSrc = "../../static/deviceCard/startwartering.png";
+				  this.buttonEnabled = true;
+				}, 1000); // 这里的 1000 表示延时的时间，单位是毫秒				
 			},
 			sendTcpMessage(device, action){
 				uni.request({
@@ -77,7 +86,7 @@
 				    'content-type': "application/x-www-form-urlencoded"
 				  },
 				 success:res=>{
-				   console.log("发送成功")
+				   console.log("发送成功：",action)
 				 } 
 				});
 			},
@@ -204,6 +213,9 @@
 					max-width: 200rpx;
 					max-height: 200rpx;
 				}			
+			}
+			.img_notClick{
+				pointer-events: none;
 			}
 		}
 		.delete-pic{

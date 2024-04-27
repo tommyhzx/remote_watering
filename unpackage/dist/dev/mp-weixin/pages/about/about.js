@@ -5,7 +5,8 @@ const _sfc_main = {
     return {
       userInfo: {
         avatarUrl: getApp().globalData.userAvater || "/static/pic/defaultAvatar.png",
-        userName: getApp().globalData.username
+        userName: getApp().globalData.username,
+        userID: getApp().globalData.userID
       },
       tempUrl: "",
       tempName: ""
@@ -124,12 +125,13 @@ function _sfc_render(_ctx, _cache, $props, $setup, $data, $options) {
   return {
     a: $data.userInfo.avatarUrl,
     b: common_vendor.o((...args) => $options.onChooseavatar && $options.onChooseavatar(...args)),
-    c: $data.userInfo.userName,
-    d: common_vendor.o((...args) => $options.bindblur && $options.bindblur(...args)),
-    e: common_vendor.o((...args) => $options.changeName && $options.changeName(...args)),
-    f: common_vendor.o((...args) => $options.save && $options.save(...args)),
-    g: common_vendor.o((...args) => $options.cancel && $options.cancel(...args)),
-    h: common_vendor.o((...args) => $options.userLogout && $options.userLogout(...args))
+    c: common_vendor.t($data.userInfo.userID),
+    d: $data.userInfo.userName,
+    e: common_vendor.o((...args) => $options.bindblur && $options.bindblur(...args)),
+    f: common_vendor.o((...args) => $options.changeName && $options.changeName(...args)),
+    g: common_vendor.o((...args) => $options.save && $options.save(...args)),
+    h: common_vendor.o((...args) => $options.cancel && $options.cancel(...args)),
+    i: common_vendor.o((...args) => $options.userLogout && $options.userLogout(...args))
   };
 }
 const MiniProgramPage = /* @__PURE__ */ common_vendor._export_sfc(_sfc_main, [["render", _sfc_render], ["__file", "/Users/tommybei/software/code_project/uniapp_project/warteringCloud/pages/about/about.vue"]]);
