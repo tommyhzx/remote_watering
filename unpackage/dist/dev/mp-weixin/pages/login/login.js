@@ -4,7 +4,9 @@ const _sfc_main = {
   data() {
     return {
       logoUrl: "https://mp-0c7f093e-1151-46a0-9859-1d831d548ad6.cdn.bspapp.com/yumiLogo.png",
-      backGroundUrl: "https://mp-0c7f093e-1151-46a0-9859-1d831d548ad6.cdn.bspapp.com/background.png"
+      backGroundUrl: "https://mp-0c7f093e-1151-46a0-9859-1d831d548ad6.cdn.bspapp.com/background.png",
+      loginDisabled: false
+      // 初始化为可点击状态
     };
   },
   methods: {
@@ -13,6 +15,7 @@ const _sfc_main = {
         common_vendor.index.showLoading({
           title: "正在登录中"
         });
+        this.loginDisabled = true;
         const code = await this.getWxCode();
         const openID = await this.getWxOpneId(code);
         if (openID == -1) {
@@ -49,6 +52,7 @@ const _sfc_main = {
           });
         }
         common_vendor.index.hideLoading();
+        this.loginDisabled = false;
         common_vendor.index.reLaunch({
           url: "/pages/homepage/homepage",
           success() {
@@ -62,6 +66,7 @@ const _sfc_main = {
           title: "登录异常，请重试" + JSON.stringify(error),
           image: ""
         });
+        this.loginDisabled = false;
       }
     },
     //获取微信code
@@ -148,7 +153,8 @@ function _sfc_render(_ctx, _cache, $props, $setup, $data, $options) {
   return {
     a: $data.logoUrl,
     b: $data.backGroundUrl,
-    c: common_vendor.o((...args) => $options.userLogin && $options.userLogin(...args))
+    c: $data.loginDisabled,
+    d: common_vendor.o((...args) => $options.userLogin && $options.userLogin(...args))
   };
 }
 const MiniProgramPage = /* @__PURE__ */ common_vendor._export_sfc(_sfc_main, [["render", _sfc_render], ["__file", "/Users/tommybei/software/code_project/uniapp_project/warteringCloud/pages/login/login.vue"]]);

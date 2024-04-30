@@ -10,7 +10,7 @@
 		<view class="text">and enjoy your life</view>
 		<view class="spacer-end"></view> <!-- 下方间隔 -->	
 		<view>
-			<button class="login_btn" @click="userLogin">立即微信登录<br>Login</button>
+			<button class="login_btn" :disabled="loginDisabled" @click="userLogin">立即微信登录<br>Login</button>
 		</view>
 	</view>
 	
@@ -22,6 +22,7 @@
 			return {
 				logoUrl: 'https://mp-0c7f093e-1151-46a0-9859-1d831d548ad6.cdn.bspapp.com/yumiLogo.png',	
 				backGroundUrl:"https://mp-0c7f093e-1151-46a0-9859-1d831d548ad6.cdn.bspapp.com/background.png",
+				loginDisabled: false, // 初始化为可点击状态
 			};
 		},
 		methods:{
@@ -30,6 +31,8 @@
 					uni.showLoading({
 						title:"正在登录中"
 					});
+					// 禁用登录按钮
+					this.loginDisabled = true;
 					// 获取用户 code
 					const code = await this.getWxCode();
 					//获取用户openid
@@ -73,6 +76,8 @@
 						});
 					}
 					uni.hideLoading();
+					// 登录完成后恢复按钮
+					this.loginDisabled = false;
 					// 跳转到首页
 					uni.reLaunch({
 					    url: '/pages/homepage/homepage',
@@ -88,6 +93,8 @@
 						title: "登录异常，请重试" + JSON.stringify(error),
 						image: ""
 					});
+					// 登录完成后恢复按钮
+					this.loginDisabled = false;
 				}
 			},		
 			//获取微信code
@@ -208,9 +215,13 @@
 			height: auto;
 			padding: 10px;
 			background-color: #FFE100;
-			border-radius: 15px;
+			border-radius: 30px;
+			border-style: solid;
+			border-width: 1px;
+			// border: black;
 			font-size: 14px;
 			line-height: 1;
+			
 		}
 	}
 </style>
