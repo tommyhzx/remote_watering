@@ -10,7 +10,7 @@
 		<view class="text">and enjoy your life</view>
 		<view class="spacer-end"></view> <!-- 下方间隔 -->	
 		<view>
-			<button class="login_btn" :disabled="loginDisabled" @click="userLogin">立即微信登录<br>Login</button>
+			<button class="login_btn" :disabled="loginDisabled" @click="userLogin">立即登录<!-- <br>Login --></button>
 		</view>
 	</view>
 	
@@ -132,6 +132,7 @@
 			
 			//查询数据库是否存在用户
 			async checkUser(openid){
+				console.log('checkUser');
 				const res = await uniCloud.callFunction({
 					name:"checkUserById",
 					data:{
@@ -211,7 +212,8 @@
 			font-size: 14px;
 		}
 		.login_btn{
-			width: 500rpx;
+			width: 350rpx;
+			margin-top: 100rpx;
 			height: auto;
 			padding: 10px;
 			background-color: #FFE100;

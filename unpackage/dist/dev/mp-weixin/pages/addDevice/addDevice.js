@@ -10,7 +10,8 @@ const _sfc_main = {
         deviceName: "",
         devicePlace: "",
         devicePassword: ""
-      }
+      },
+      deviceUrl: "https://mp-0c7f093e-1151-46a0-9859-1d831d548ad6.cdn.bspapp.com/device.png"
     };
   },
   methods: {
@@ -82,17 +83,18 @@ const _sfc_main = {
 };
 function _sfc_render(_ctx, _cache, $props, $setup, $data, $options) {
   return {
-    a: $data.device.deviceSN,
-    b: common_vendor.o(($event) => $data.device.deviceSN = $event.detail.value),
-    c: $data.device.devicePassword,
-    d: common_vendor.o(($event) => $data.device.devicePassword = $event.detail.value),
-    e: common_vendor.o((...args) => $options.scanQRcode && $options.scanQRcode(...args)),
-    f: $data.device.deviceName,
-    g: common_vendor.o(($event) => $data.device.deviceName = $event.detail.value),
-    h: $data.device.devicePlace,
-    i: common_vendor.o(($event) => $data.device.devicePlace = $event.detail.value),
-    j: common_vendor.o((...args) => $options.confirm && $options.confirm(...args)),
-    k: common_vendor.o((...args) => $options.cancel && $options.cancel(...args))
+    a: $data.deviceUrl,
+    b: $data.device.deviceSN,
+    c: common_vendor.o(($event) => $data.device.deviceSN = $event.detail.value),
+    d: $data.device.devicePassword,
+    e: common_vendor.o(($event) => $data.device.devicePassword = $event.detail.value),
+    f: common_vendor.o((...args) => $options.scanQRcode && $options.scanQRcode(...args)),
+    g: $data.device.deviceName,
+    h: common_vendor.o(($event) => $data.device.deviceName = $event.detail.value),
+    i: $data.device.devicePlace,
+    j: common_vendor.o(($event) => $data.device.devicePlace = $event.detail.value),
+    k: common_vendor.o((...args) => $options.confirm && $options.confirm(...args)),
+    l: common_vendor.o((...args) => $options.cancel && $options.cancel(...args))
   };
 }
 const MiniProgramPage = /* @__PURE__ */ common_vendor._export_sfc(_sfc_main, [["render", _sfc_render], ["__file", "/Users/tommybei/software/code_project/uniapp_project/warteringCloud/pages/addDevice/addDevice.vue"]]);

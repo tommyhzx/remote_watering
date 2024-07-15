@@ -8,8 +8,9 @@ const _sfc_main = {
       connectStatus: "离线",
       deviceUrl: "https://mp-0c7f093e-1151-46a0-9859-1d831d548ad6.cdn.bspapp.com/device.png",
       deletePicUrl: "https://mp-0c7f093e-1151-46a0-9859-1d831d548ad6.cdn.bspapp.com/delte-pic.png",
-      buttonEnabled: true
+      buttonEnabled: true,
       // 添加一个变量来控制按钮的可用性
+      buttonText: "开始浇花"
     };
   },
   props: {
@@ -30,14 +31,14 @@ const _sfc_main = {
     onWaterring(device) {
       this.sendTcpMessage(device, "on");
       this.warteringimageSrc = "../../static/deviceCard/stopwartering.png";
-      this.buttonEnabled = false;
+      this.buttonText = "正在浇花", this.buttonEnabled = false;
     },
     stopWaterring(device) {
       setTimeout(() => {
         this.sendTcpMessage(device, "off");
         this.warteringimageSrc = "../../static/deviceCard/startwartering.png";
-        this.buttonEnabled = true;
-      }, 1e3);
+        this.buttonText = "开始浇花", this.buttonEnabled = true;
+      }, 500);
     },
     sendTcpMessage(device, action) {
       common_vendor.index.request({
@@ -134,8 +135,9 @@ function _sfc_render(_ctx, _cache, $props, $setup, $data, $options) {
     i: common_vendor.o(($event) => $options.stopWaterring($props.device)),
     j: !$data.buttonEnabled,
     k: common_vendor.n($data.buttonEnabled == true ? "" : "img_notClick"),
-    l: $data.deletePicUrl,
-    m: common_vendor.o((...args) => $options.deleteDevice && $options.deleteDevice(...args))
+    l: common_vendor.t($data.buttonText),
+    m: $data.deletePicUrl,
+    n: common_vendor.o((...args) => $options.deleteDevice && $options.deleteDevice(...args))
   };
 }
 const Component = /* @__PURE__ */ common_vendor._export_sfc(_sfc_main, [["render", _sfc_render], ["__file", "/Users/tommybei/software/code_project/uniapp_project/warteringCloud/components/CustomModal/DeviceCard.vue"]]);

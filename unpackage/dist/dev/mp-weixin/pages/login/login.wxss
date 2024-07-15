@@ -47,7 +47,8 @@
   font-size: 14px;
 }
 .imgContainer .login_btn {
-  width: 500rpx;
+  width: 350rpx;
+  margin-top: 100rpx;
   height: auto;
   padding: 10px;
   background-color: #FFE100;

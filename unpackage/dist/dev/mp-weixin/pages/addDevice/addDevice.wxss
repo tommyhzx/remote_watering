@@ -35,11 +35,12 @@
   align-items: center;
 }
 .overlay .imagecontainer .device-pic {
-  width: 200rpx;
+  width: 300rpx;
 }
 .overlay .input-modal {
   width: 500rpx;
   font-size: 14px;
+  margin-bottom: 100rpx;
 }
 .overlay .input-modal .deviceSN {
   display: flex;
@@ -56,7 +57,10 @@
   height: 80rpx;
   width: 350rpx;
 }
-.overlay .input-modal .deviceSN .deviceScan {
+.overlay .input-modal .deviceSN .saoma {
+  margin: 30rpx;
+}
+.overlay .input-modal .deviceSN .saoma .deviceScan {
   width: 120rpx;
   height: 120rpx;
 }
@@ -69,19 +73,26 @@
   height: 80rpx;
 }
 .overlay .btn {
+  display: flex;
+  flex-direction: row;
   margin-bottom: 50rpx;
 }
 .overlay .btn .button-ok {
-  width: 300rpx;
+  width: 200rpx;
   font-size: 14px;
   margin-bottom: 5px;
-  border-radius: 10px;
+  margin-right: 50rpx;
+  border-radius: 30px;
   background-color: #FFE100;
+  border-style: solid;
+  border-width: 1px;
 }
 .overlay .btn .button-cancel {
-  width: 300rpx;
+  width: 200rpx;
   font-size: 14px;
   margin-bottom: 5px;
-  border-radius: 10px;
-  background-color: #BFBFBF;
+  border-radius: 30px;
+  background-color: lightgray;
+  border-style: solid;
+  border-width: 1px;
 }

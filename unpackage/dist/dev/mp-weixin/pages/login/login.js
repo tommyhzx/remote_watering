@@ -101,6 +101,7 @@ const _sfc_main = {
     },
     //查询数据库是否存在用户
     async checkUser(openid) {
+      console.log("checkUser");
       const res = await common_vendor.Ws.callFunction({
         name: "checkUserById",
         data: {

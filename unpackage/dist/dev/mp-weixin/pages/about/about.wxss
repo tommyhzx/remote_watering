@@ -54,6 +54,7 @@
   height: 100rpx;
   padding: 0;
   /* 清除按钮默认的内边距 */
+  border-radius: 30px;
 }
 .container .avatar .avatarbtn .avatarImage {
   width: 100%;
@@ -76,24 +77,54 @@
   width: 300rpx;
   text-align: right;
 }
+.container .divider {
+  width: 100%;
+  /* 横线宽度占满父容器 */
+  height: 1px;
+  /* 横线高度 */
+  background-color: #E0E0E0;
+  /* 横线颜色 */
+  margin-top: 10rpx;
+  /* 分隔线与上方元素的距离 */
+  margin-bottom: 10rpx;
+  /* 分隔线与下方元素的距离 */
+}
+.container .advice {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  padding: 40rpx;
+}
+.container .btn {
+  display: flex;
+  justify-content: center;
+  margin-top: 30rpx;
+}
+.container .btn .btn-save {
+  width: 200rpx;
+  font-size: 14px;
+  border-radius: 30px;
+  background-color: #FFE100;
+  border-style: solid;
+  border-width: 1px;
+}
+.container .btn .btn-cancel {
+  width: 200rpx;
+  font-size: 14px;
+  border-radius: 30px;
+  background-color: lightgray;
+  border-style: solid;
+  border-width: 1px;
+}
 .container .logoutbtn {
   border-radius: 40rpx;
   border: #000000;
-  color: firebrick;
   margin-top: auto;
   margin-bottom: 100rpx;
-}
-.container .btn-save {
-  width: 300rpx;
-  font-size: 14px;
-  margin-bottom: 5px;
-  border-radius: 10px;
   background-color: #FFE100;
-}
-.container .btn-cancel {
-  width: 300rpx;
+  border-radius: 30px;
+  border-style: solid;
+  border-width: 1px;
+  width: 400rpx;
   font-size: 14px;
-  margin-bottom: 5px;
-  border-radius: 10px;
-  background-color: #BFBFBF;
 }

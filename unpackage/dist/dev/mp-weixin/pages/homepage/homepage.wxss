@@ -34,22 +34,26 @@
   justify-content: space-between;
   align-items: center;
   background-color: #FFE100;
-  width: 100hw;
-  margin-top: 30rpx;
+  height: 120rpx;
 }
 .containor .header .welcom {
   display: flex;
   align-items: center;
 }
 .containor .header .welcom .avatar {
-  max-width: 100rpx;
-  max-height: 100rpx;
+  width: 100rpx;
+  height: 100rpx;
   margin-right: 50rpx;
   margin-left: 30rpx;
-  border-radius: 15px;
+  border-radius: 30px;
 }
-.containor .header .logo {
-  max-height: 70rpx;
+.containor .header .add_device_pic {
+  display: flex;
+  align-items: center;
+  height: 100rpx;
+}
+.containor .header .add_device_pic .add_device {
+  height: 70rpx;
   margin-left: 30rpx;
 }
 .containor .header .peiwang {
@@ -57,7 +61,7 @@
   align-items: center;
 }
 .containor .header .peiwang-img {
-  max-height: 70rpx;
+  height: 70rpx;
   margin-left: 30rpx;
 }
 .containor .swiper {
@@ -65,7 +69,6 @@
   align-items: center;
   height: 85vh;
   width: 750rpx;
-  margin-top: 30rpx;
   background-color: white;
   border-radius: 0rpx;
 }

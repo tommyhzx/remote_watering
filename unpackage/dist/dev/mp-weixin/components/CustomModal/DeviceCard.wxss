@@ -37,7 +37,7 @@
   flex-direction: column;
   justify-content: space-around;
   align-items: center;
-  margin-top: 10vh;
+  margin-top: 5vh;
 }
 .containor .deviceInfo .device-pic {
   max-width: 250rpx;
@@ -61,20 +61,31 @@
   align-items: center;
 }
 .containor .wifi-containor .wifi .wifi-logo {
-  max-width: 100rpx;
-  max-height: 100rpx;
+  max-width: 60rpx;
+  max-height: 60rpx;
   margin: 10rpx;
+  margin-right: 30rpx;
 }
 .containor .wifi-containor .wifi .wifi-text {
   font-size: 20px;
 }
+.containor .button-containor {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-bottom: 10rpx;
+}
 .containor .button-containor .pic-button {
   display: flex;
   align-items: center;
+  margin-bottom: 20rpx;
 }
 .containor .button-containor .pic-button .col2Image {
   max-width: 200rpx;
   max-height: 200rpx;
+}
+.containor .button-containor .btn-text {
+  font-size: 20px;
 }
 .containor .button-containor .img_notClick {
   pointer-events: none;

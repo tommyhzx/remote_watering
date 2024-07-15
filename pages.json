@@ -7,72 +7,42 @@
 				"navigationBarTitleText" : "登录页面",
 				"enablePullDownRefresh" : false,
 				"navigationBarBackgroundColor": "#FFE100"  // 这里设置为黄色
-				// "navigationBarTitleImage": "/static/pic/yumiLogo.png"
-			}
-		},
-		{
-			"path": "pages/index/index",
-			"style": {
-				"navigationBarTitleText": "uni-app"
+				// "navigationStyle": "custom"
 			}
 		},
 		{
 			"path" : "pages/homepage/homepage",
 			"style" : 
 			{
-				"navigationBarTitleText" : "首页",
+				"navigationBarTitleText" : "主页",
 				"enablePullDownRefresh" : false,
 				"navigationBarBackgroundColor": "#FFE100"
-				// "navigationBarTitleImage": "/static/pic/yumiLogo.png"
+				// "navigationStyle": "custom"
 			}
 		},
 		{
 			"path" : "pages/about/about",
 			"style" : 
 			{
-				"navigationBarTitleText" : "",
-				"enablePullDownRefresh" : false
+				"navigationBarTitleText" : "用户信息",
+				"enablePullDownRefresh" : false,
+				"navigationBarBackgroundColor": "#FFE100"
 			}
 		},
 		{
 			"path" : "pages/addDevice/addDevice",
 			"style" : 
 			{
-				"navigationBarTitleText" : "",
+				"navigationBarTitleText" : "添加设备",
 				"enablePullDownRefresh" : false,
 				"navigationBarBackgroundColor": "#FFE100"
 			}
 		}
 		
 	],
-	// "tabBar": {
-	// 	"backgroundColor": "#fff",
-	// 	"color": "#D2E3F5"	,
-	// 	"selectedColor": "#D2E3F5",
-	// 	"list": [
-	// 		{
-	// 			"text":  "首页",
-	// 			"pagePath": "pages/homepage/homepage",
-	// 			"iconPath": "static/icon/home.png",
-	// 			"selectedIconPath":"static/icon/home_select.png"
-	// 		},
-	// 		{
-	// 			"text":  "设备",
-	// 			"pagePath": "pages/index/index",
-	// 			"iconPath": "static/icon/device.png",
-	// 			"selectedIconPath":"static/icon/device_select.png"
-	// 		},
-	// 		{
-	// 			"text":  "我的",
-	// 			"pagePath": "pages/about/about",
-	// 			"iconPath": "static/icon/about.png",
-	// 			"selectedIconPath":"static/icon/about_select.png"
-	// 		}
-	// 	]
-	// 	},
 	"globalStyle": {
 		"navigationBarTextStyle": "black",
-		"navigationBarTitleText": "uni-app",
+		// "navigationBarTitleText": "uni-app",
 		"navigationBarBackgroundColor": "#F8F8F8",
 		"backgroundColor": "#F8F8F8"
 	},

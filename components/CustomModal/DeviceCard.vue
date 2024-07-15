@@ -21,9 +21,10 @@
 					@touchstart="onWaterring(device)" @touchend="stopWaterring(device)"
 					:disabled="!buttonEnabled"></image>
 				</view>
+				<text class="btn-text">{{buttonText}}</text>
 			</view>
 			<view class='delete-containor'>
-				<image class="delete-pic" :src="deletePicUrl" mode="heightFix" @click="deleteDevice"></image>
+				<image class="delete-pic" :src="deletePicUrl" mode="heightFix" @click="deleteDevice"></image>				
 			</view>
 		<!-- </view> -->
 	</view>
@@ -40,6 +41,7 @@
 				deviceUrl:"https://mp-0c7f093e-1151-46a0-9859-1d831d548ad6.cdn.bspapp.com/device.png",
 				deletePicUrl:"https://mp-0c7f093e-1151-46a0-9859-1d831d548ad6.cdn.bspapp.com/delte-pic.png",
 				buttonEnabled: true, // 添加一个变量来控制按钮的可用性
+				buttonText:"开始浇花",
 			};
 		},
 		props:{
@@ -62,6 +64,7 @@
 				// console.log("send tcp message",device)
 				this.sendTcpMessage(device,"on");			
 				this.warteringimageSrc = "../../static/deviceCard/stopwartering.png";
+				this.buttonText = "正在浇花",
 				this.buttonEnabled = false;
 			},
 			stopWaterring(device){
@@ -69,8 +72,9 @@
 				  // 这里写要延时执行的代码
 				  this.sendTcpMessage(device,"off");
 				  this.warteringimageSrc = "../../static/deviceCard/startwartering.png";
+				  this.buttonText = "开始浇花",
 				  this.buttonEnabled = true;
-				}, 1000); // 这里的 1000 表示延时的时间，单位是毫秒				
+				}, 500); // 这里的 1000 表示延时的时间，单位是毫秒				
 			},
 			sendTcpMessage(device, action){
 				uni.request({
@@ -161,6 +165,7 @@
 <style lang="scss">
 	.containor{
 		background-color: #ffffff;
+		// background-color: #fff11111;
 		display: flex;
 		flex-direction: column;
 		justify-content: space-between;
@@ -173,7 +178,7 @@
 			flex-direction: column;
 			justify-content: space-around;
 			align-items: center;
-			margin-top: 10vh;
+			margin-top: 5vh;
 			.device-pic{
 				max-width: 250rpx;
 				max-height: 250rpx;
@@ -196,9 +201,10 @@
 				align-items: center;
 				
 				.wifi-logo{
-					max-width: 100rpx;
-					max-height: 100rpx;
+					max-width: 60rpx;
+					max-height: 60rpx;
 					margin: 10rpx;
+					margin-right: 30rpx;
 				}
 				.wifi-text{
 					font-size: 20px;
@@ -206,13 +212,21 @@
 			}
 		}
 		.button-containor{
+			display: flex;
+			flex-direction: column;
+			align-items: center;
+			margin-bottom: 10rpx;
 			.pic-button{
 				display: flex;
 				align-items: center;
+				margin-bottom: 20rpx;
 				.col2Image{
 					max-width: 200rpx;
 					max-height: 200rpx;
 				}			
+			}
+			.btn-text{
+				font-size: 20px;
 			}
 			.img_notClick{
 				pointer-events: none;

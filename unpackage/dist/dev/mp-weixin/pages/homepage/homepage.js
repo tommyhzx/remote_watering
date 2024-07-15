@@ -19,7 +19,7 @@ const _sfc_main = {
       avatarUrl: getApp().globalData.userAvater || "/static/pic/defaultAvatar.png",
       // 存储用户头像地址
       userName: getApp().globalData.username,
-      addPicUrl: "https://mp-0c7f093e-1151-46a0-9859-1d831d548ad6.cdn.bspapp.com/add_pic.png",
+      addPicUrl: "/static/homepage/add_device.png",
       peiwangUrl: "https://mp-0c7f093e-1151-46a0-9859-1d831d548ad6.cdn.bspapp.com/peiwang.png",
       addBtnUrl: "https://mp-0c7f093e-1151-46a0-9859-1d831d548ad6.cdn.bspapp.com/add-btn.png"
     };

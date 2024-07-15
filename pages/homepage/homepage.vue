@@ -1,17 +1,18 @@
 <template>
 	<view class="containor">	
 		<view class="header">
-			<image class="logo" :src="addPicUrl" @click="addDevice" mode="heightFix"/>
+			<view class="add_device_pic">
+				<image class="add_device" :src="addPicUrl" @click="addDevice" mode="heightFix"/>
+			</view>
+			
 			<view class="peiwang">
 				<image class="peiwang-img" :src="peiwangUrl" @click="peiwang" mode="heightFix"/>
 				<text>一键配网</text>
-			</view>
-			
+			</view>			
 			<view class="welcom">
 				<text class="welcom-text">欢迎, {{userName}}</text>
 				<image class="avatar" :src='avatarUrl' @click="gotoAbout"/>
-			</view>
-		    
+			</view>	    
 		</view>
 
 		<swiper class="swiper" interval="interval" indicator-dots="true" 
@@ -52,7 +53,7 @@
 
 				avatarUrl: getApp().globalData.userAvater || '/static/pic/defaultAvatar.png',// 存储用户头像地址
 				userName:getApp().globalData.username,
-				addPicUrl:"https://mp-0c7f093e-1151-46a0-9859-1d831d548ad6.cdn.bspapp.com/add_pic.png",
+				addPicUrl:"/static/homepage/add_device.png",
 				peiwangUrl:"https://mp-0c7f093e-1151-46a0-9859-1d831d548ad6.cdn.bspapp.com/peiwang.png",
 				addBtnUrl:"https://mp-0c7f093e-1151-46a0-9859-1d831d548ad6.cdn.bspapp.com/add-btn.png",
 			};
@@ -186,30 +187,36 @@
 			justify-content: space-between;
 			align-items: center;
 			background-color: #FFE100;
-			width: 100hw;
-			margin-top: 30rpx;
+			height: 120rpx;
+			// width: 100hw;
+			// margin-top: 30rpx;
 			.welcom{
 				display: flex;
 				align-items: center;
 				.avatar{
-					max-width: 100rpx;
-					max-height: 100rpx;
+					width: 100rpx;
+					height: 100rpx;
 					margin-right: 50rpx;
 					margin-left: 30rpx;
-					border-radius: 15px;
+					border-radius: 30px;
+				}
+			}
+			.add_device_pic{
+				display: flex;
+				align-items: center;
+				height: 100rpx;
+				.add_device{					
+					height: 70rpx;
+					margin-left: 30rpx;
 				}
 			}
 			
-			.logo{
-				max-height: 70rpx;
-				margin-left: 30rpx;
-			}
 			.peiwang{
 				display: flex;
 				align-items: center;
 			}
 			.peiwang-img{
-				max-height: 70rpx;
+				height: 70rpx;
 				margin-left: 30rpx;
 			}
 		}
@@ -218,7 +225,6 @@
 			align-items: center;
 			height: 85vh;
 			width: 750rpx;
-			margin-top: 30rpx;
 			background-color: white;
 			border-radius: 0rpx;
 			.add-device-btn-containor{

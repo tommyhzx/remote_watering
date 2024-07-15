@@ -20,7 +20,12 @@
 			<input ref='inputRef' :clearable="false" type="nickname" class="name-input" :value="userInfo.userName" @blur="bindblur"
 				placeholder="请输入昵称" @input="changeName" />
 		</view>
-		<view>
+		<view class="divider"></view> <!-- 添加分隔线 -->
+		<view class="advice">
+			<text>建议反馈</text>
+			<text>QQ交流群：269548891</text>
+		</view>
+		<view class="btn">
 			<button class='btn-save' @click="save">保存</button>
 			<button class='btn-cancel' @click="cancel">取消</button>
 		</view>
@@ -163,7 +168,6 @@
 .container{
 	display: flex;
 	flex-direction: column;
-	
 	height: 100vh;
 	margin-top: auto; /* 使容器尽可能靠底部 */
 	.title{
@@ -187,8 +191,7 @@
 			width: 100rpx;
 			height: 100rpx;
 			padding: 0; /* 清除按钮默认的内边距 */
-			// justify-content: space-between;
-			// align-items: center;
+			border-radius: 30px;
 			.avatarImage{
 				width: 100%;
 				height: 100%;
@@ -213,26 +216,53 @@
 			text-align: right;
 		}
 	}
+	.divider {
+	    width: 100%; /* 横线宽度占满父容器 */
+	    height: 1px; /* 横线高度 */
+	    background-color: #E0E0E0; /* 横线颜色 */
+	    margin-top: 10rpx; /* 分隔线与上方元素的距离 */
+	    margin-bottom: 10rpx; /* 分隔线与下方元素的距离 */
+	}
+	.advice{
+		display: flex;
+		flex-direction: row;
+		justify-content:space-between;
+		padding: 40rpx;
+	}
+	.btn{
+		display: flex;
+		// flex-direction: column;
+		justify-content:center;
+		margin-top: 30rpx;
+		.btn-save{
+			width: 200rpx;
+			font-size: 14px;	
+			border-radius: 30px;
+			background-color: #FFE100;
+			border-style: solid;
+			border-width: 1px;
+		}
+		.btn-cancel{
+			width: 200rpx;
+			font-size: 14px;	
+			border-radius: 30px;
+			background-color: lightgray;
+			border-style: solid;
+			border-width: 1px;
+		}
+	}
 	.logoutbtn{
 		border-radius: 40rpx;
 		border: #000000;
-		color: firebrick;
 		margin-top: auto;
 		margin-bottom: 100rpx;
-	}
-	.btn-save{
-		width: 300rpx;
-		font-size: 14px;
-		margin-bottom: 5px;		
-		border-radius: 10px;
 		background-color: #FFE100;
-	}
-	.btn-cancel{
-		width: 300rpx;
+		border-radius: 30px;
+		border-style: solid;
+		border-width: 1px;
+		width: 400rpx;
 		font-size: 14px;
-		margin-bottom: 5px;		
-		border-radius: 10px;
-		background-color: #BFBFBF;
 	}
+	
 }
 </style>
