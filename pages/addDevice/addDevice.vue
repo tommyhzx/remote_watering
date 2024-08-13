@@ -44,7 +44,7 @@
 					devicePlace:'',
 					devicePassword:'',
 				},
-				deviceUrl:"https://mp-0c7f093e-1151-46a0-9859-1d831d548ad6.cdn.bspapp.com/device.png",
+				deviceUrl:"https://mp-0c7f093e-1151-46a0-9859-1d831d548ad6.cdn.bspapp.com/uniapp/device.png",
 			};
 		},
 		methods:{

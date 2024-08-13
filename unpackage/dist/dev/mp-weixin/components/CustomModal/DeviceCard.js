@@ -6,39 +6,55 @@ const _sfc_main = {
       warteringimageSrc: "../../static/deviceCard/startwartering.png",
       connectStatusScr: "../../static/deviceCard/wifi_disconnect.png",
       connectStatus: "离线",
-      deviceUrl: "https://mp-0c7f093e-1151-46a0-9859-1d831d548ad6.cdn.bspapp.com/device.png",
+      deviceUrl: "https://mp-0c7f093e-1151-46a0-9859-1d831d548ad6.cdn.bspapp.com/uniapp/device.png",
       deletePicUrl: "https://mp-0c7f093e-1151-46a0-9859-1d831d548ad6.cdn.bspapp.com/delte-pic.png",
       buttonEnabled: true,
       // 添加一个变量来控制按钮的可用性
-      buttonText: "开始浇花"
+      buttonText: "开始浇花",
+      wateringTimeout: null
+      // 添加一个变量来存储定时器ID
     };
   },
   props: {
     device: {
-      deviceSN: String,
-      deviceName: String,
-      devicePlace: String
+      type: Object,
+      required: true,
+      default: () => ({
+        deviceSN: "",
+        deviceName: "",
+        devicePlace: ""
+      })
     }
   },
   mounted() {
-    this.getDeviceConnectionStatus();
-    console.log("mounted");
-    setInterval(() => {
-      this.getDeviceConnectionStatus();
-    }, 5e3);
+    this.startDeviceConnectionStatusCheck();
   },
   methods: {
     onWaterring(device) {
       this.sendTcpMessage(device, "on");
       this.warteringimageSrc = "../../static/deviceCard/stopwartering.png";
       this.buttonText = "正在浇花", this.buttonEnabled = false;
+      this.wateringTimeout = setTimeout(() => {
+        this.stopWaterring(device);
+      }, 1e4);
     },
     stopWaterring(device) {
-      setTimeout(() => {
+      console.log("stopWaterring", device);
+      if (this.wateringTimeout) {
+        clearTimeout(this.wateringTimeout);
+        this.wateringTimeout = null;
+      }
+      let count = 0;
+      const interval = setInterval(() => {
+        console.log("send tcp message off", device);
         this.sendTcpMessage(device, "off");
-        this.warteringimageSrc = "../../static/deviceCard/startwartering.png";
-        this.buttonText = "开始浇花", this.buttonEnabled = true;
-      }, 500);
+        count++;
+        if (count === 2) {
+          clearInterval(interval);
+          this.warteringimageSrc = "../../static/deviceCard/startwartering.png";
+          this.buttonText = "开始浇花", this.buttonEnabled = true;
+        }
+      }, 300);
     },
     sendTcpMessage(device, action) {
       common_vendor.index.request({
@@ -118,7 +134,19 @@ const _sfc_main = {
         });
       } catch (error) {
         console.error("获取设备连接状态失败：", error);
+        common_vendor.index.showToast({
+          title: "获取设备连接状态失败",
+          icon: "error"
+        });
       }
+    },
+    startDeviceConnectionStatusCheck() {
+      this.getDeviceConnectionStatus().then(() => {
+        setTimeout(this.startDeviceConnectionStatusCheck, 5e3);
+      }).catch((error) => {
+        console.error("获取设备连接状态失败:", error);
+        setTimeout(this.startDeviceConnectionStatusCheck, 5e3);
+      });
     }
   }
 };
