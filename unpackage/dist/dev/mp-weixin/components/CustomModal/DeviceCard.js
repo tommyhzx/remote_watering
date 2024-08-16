@@ -39,14 +39,12 @@ const _sfc_main = {
       }, 1e4);
     },
     stopWaterring(device) {
-      console.log("stopWaterring", device);
       if (this.wateringTimeout) {
         clearTimeout(this.wateringTimeout);
         this.wateringTimeout = null;
       }
       let count = 0;
       const interval = setInterval(() => {
-        console.log("send tcp message off", device);
         this.sendTcpMessage(device, "off");
         count++;
         if (count === 2) {

@@ -72,22 +72,13 @@ export default {
             }, 10000);
 		},
 		stopWaterring(device) {
-			console.log("stopWaterring", device);
 			// 清除定时器
             if (this.wateringTimeout) {
                 clearTimeout(this.wateringTimeout);
                 this.wateringTimeout = null;
             }
-			let count = 0;
-			// setTimeout(() => {
-			//   // 这里写要延时执行的代码
-			//   this.sendTcpMessage(device,"off");
-			//   this.warteringimageSrc = "../../static/deviceCard/startwartering.png";
-			//   this.buttonText = "开始浇花",
-			//   this.buttonEnabled = true;
-			// }, 500); // 这里的 1000 表示延时的时间，单位是毫秒		
+			let count = 0;	
 			const interval = setInterval(() => {
-				console.log("send tcp message off", device);
 				this.sendTcpMessage(device, "off");
 				count++
 				if (count === 2) {
