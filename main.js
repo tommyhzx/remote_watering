@@ -16,6 +16,8 @@ app.$mount()
 
 // #ifdef VUE3
 import { createSSRApp } from 'vue'
+import Vant from 'vant'
+import 'vant/lib/index.css'
 export function createApp() {
   const app = createSSRApp(App)
   // 全局引入Vant
