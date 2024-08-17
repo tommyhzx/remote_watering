@@ -26,7 +26,7 @@ exports.checkUserById = async (event, context) => {
 			}else{
 				return{
 					code:-1,
-					msg:'用户存在',
+					msg:'用户已存在',
 					WxOpenId: WxOpenId
 				}
 			}

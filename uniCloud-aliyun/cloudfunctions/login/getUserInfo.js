@@ -5,7 +5,13 @@ const db = uniCloud.database();
 exports.getUserInfo = async (event, context) => {
     // 从 event 中获取 WxOpenId
 	const { WxOpenId } = event;
-	
+	// 检查 WxOpenId 是否存在
+    if (!WxOpenId) {
+        return {
+            code: -1,
+            msg: 'WxOpenId 不能为空'
+        };
+    }
 	try {
 		// 查询数据库中符合条件的用户信息
 		const res = await db.collection('usersWx').where({

@@ -2,7 +2,7 @@
 	<view class="imgContainer">
 		<view class="spacer"></view> <!-- 上方间隔 -->
 		<image class="logo" :src="logoUrl" mode="widthFix" />
-		<view class="spacer-buttom"></view> <!-- 下方间隔 -->
+		<view class="spacer-bottom"></view> <!-- 下方间隔 -->
 		<image class="background" :src="backGroundUrl" mode="widthFix" />
 		<view class="text">登录即可控制智能设备</view>
 		<view class="text">畅享生活</view>
@@ -51,15 +51,14 @@ export default {
 				// 从缓存中获取 openID
 				let openID = uni.getStorageSync('openID');
 				openID = null;
-				console.log("getStorageSync openID:", openID);
 				if (!openID) {
 					// 获取用户 code
 					const code = await this.getWxCode();
 					if (!code) throw new Error('获取用户 code 失败');
 					//获取用户openid
-					openID = await this.getWxOpneId(code);
+					openID = await this.getWxOpenId(code);
 					if (openID === -1) throw new Error('获取 OpenID 失败');
-
+					// 将 openID 存入缓存
 					uni.setStorageSync('openID', openID);
 				}
 				// 检查用户是否存在
@@ -115,7 +114,7 @@ export default {
 			}
 		},
 		//获取微信用户OpenID
-		async getWxOpneId(code) {
+		async getWxOpenId(code) {
 			try {
 				const res = await uniCloud.callFunction({
 					name: "login",
@@ -179,7 +178,6 @@ export default {
 			if (res.result.code !== 0) {
 				throw new Error('用户添加失败');
 			}
-			console.log("数据库添加用户成功 res=", res);
 		},
 
 		//函数暂时无效
