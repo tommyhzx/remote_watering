@@ -1,8 +1,0 @@
-{
-  "navigationBarTitleText": "主页",
-  "enablePullDownRefresh": false,
-  "navigationBarBackgroundColor": "#FFE100",
-  "usingComponents": {
-    "device-card": "../../components/CustomModal/DeviceCard"
-  }
-}
