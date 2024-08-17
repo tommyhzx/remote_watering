@@ -66,7 +66,7 @@ export default {
 
 	},
 	// 每次页面跳转回来后触发
-	onLoad(option) {
+	async onLoad(option) {
 		// 登录后，传入wxID，从数据库获取用户的设备列表
 		const deviceData = await this.waitForEvent('LoginID');
 		await this.getUserDevices(deviceData);
