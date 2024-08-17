@@ -19,7 +19,7 @@
 		<view class="button-containor">
 			<view class='pic-button' :class="buttonEnabled ? '' : 'img_notClick'">
 				<image class="col2Image" :src="warteringimageSrc" mode="heightFix" @touchstart="onWaterring(device)"
-					@touchend="stopWaterring(device)" :disabled="!buttonEnabled"></image>
+					@touchend="delayedStopWaterring(device)" :disabled="!buttonEnabled"></image>
 			</view>
 			<text class="btn-text">{{ buttonText }}</text>
 		</view>
@@ -30,6 +30,7 @@
 </template>
 
 <script>
+import { api_sendTcpMessage, api_getDeviceConnectionStatus } from '@/api/api_device.js';
 export default {
 	data() {
 		return {
@@ -56,55 +57,48 @@ export default {
 	},
 	mounted() {
 		// 在页面加载后，每隔5秒执行一次获取设备连接状态的操作
-		this.startDeviceConnectionStatusCheck();
+		this.deviceConnectionCheck(this.device);
 	},
 	methods: {
 
 		async onWaterring(device) {
-			this.sendTcpMessage(device, "on");
+			let res = await api_sendTcpMessage(device, "on");
+			if (res.data.code !== 0) {
+				uni.showToast({ title: "开始消息发送失败" });
+				return;
+			}
 			this.updateWateringState(true);
 			// 当浇水按钮点击超过10s后，自动停止浇水
 			this.wateringTimeout = setTimeout(() => {
+				console.log("自动停止浇水");
 				this.stopWaterring(device);
 			}, 10000);
 		},
-		stopWaterring(device) {
-			// 清除定时器
+		// 开始浇水后，松手不能马上停止，要延迟300ms后停止浇水
+		delayedStopWaterring(device) {
+			// 清除之前的延迟调用定时器
+			if (this.stopWateringTimeout) {
+				clearTimeout(this.stopWateringTimeout);
+			}
+			// 延迟300ms调用stopWaterring
+			this.stopWateringTimeout = setTimeout(() => {
+				this.stopWaterring(device);
+			}, 300);
+		},
+		async stopWaterring(device) {
+			// 清除开始浇水的10s定时器
 			if (this.wateringTimeout) {
 				clearTimeout(this.wateringTimeout);
 				this.wateringTimeout = null;
 			}
-			// 发送停止浇水的消息2次，避免没收到
-			let count = 0;
-			const interval = setInterval(() => {
-				this.sendTcpMessage(device, "off");
-				count++
-				if (count === 2) {
-					clearInterval(interval);
-					this.updateWateringState(false);
-				}
-			}, 300);
-		},
-		async sendTcpMessage(device, action) {
-			try {
-				await uni.request({
-					url: 'https://apis.bemfa.com/va/postmsg', //api接口，详见接入文档
-					method: "POST",
-					data: {  //请求字段，详见巴法云接入文档，http接口
-						uid: "c2421290f7d14fa38251e5f77aac931a",
-						topic: this.device.deviceSN,
-						type: 3,
-						msg: action   //发送消息为on的消息
-					},
-					header: {
-						'content-type': "application/x-www-form-urlencoded"
-					}
-				})
-				console.log("发送成功：", action);
-			} catch (err) {
-				console.error("发送失败：", err);
+			let res = await api_sendTcpMessage(device, "off");
+			if (res.data.code !== 0) {
+				uni.showToast({ title: "停止消息发送失败" });
+				return;
 			}
+			this.updateWateringState(false);
 		},
+
 		async deleteDevice() {
 			const device = this.device;
 			const res = await uni.showModal({
@@ -130,62 +124,50 @@ export default {
 				}
 			} else if (res.cancel) {
 				console.log('用户点击取消');
-				uni.$emit("deleteDevice", device.deviceSN);
 			}
 		},
-
+		async deviceConnectionCheck(device) {
+			try {
+				// 获取设备连接状态
+				await this.getConnectionStatus(device);
+			} catch (error) {
+				console.error("获取设备连接状态失败:", error);
+			} finally {
+				// 5秒后再次获取状态
+				setTimeout(() => {
+					this.deviceConnectionCheck(device);
+				}, 5000);
+			}
+		},
 		// 定义获取设备连接状态的方法
-		async getDeviceConnectionStatus() {
+		async getConnectionStatus(device) {
 			try {
 				// 发送请求获取设备连接状态，并处理获取到的状态
-				// console.log("获取设备连接状态",this.device.deviceSN);
-				uni.request({
-					url: 'https://apis.bemfa.com/va/online', //api接口，详见接入文档
-					method: "GET",
-					data: {  //请求字段，详见巴法云接入文档，http接口
-						uid: "c2421290f7d14fa38251e5f77aac931a",
-						topic: this.device.deviceSN,
-						type: 3,
-					},
-					header: {
-						'content-type': "application/x-www-form-urlencoded"
-					},
-					success: res => {
-						// console.log("getDeviceConnectionStatus发送成功",res.data);
-						//请求成功
-						if (res.data.code == 0) {
-							if (res.data.data == true) { //已连接
-								this.connectStatusScr = "../../static/deviceCard/connect.png";
-								this.connectStatus = "在线";
-							} else {
-								this.connectStatusScr = "../../static/deviceCard/wifi_disconnect.png";
-								this.connectStatus = "离线";
-							}
-						}
+				const res = await api_getDeviceConnectionStatus(device);
+				if (res.data.code === 0) {
+					if (res.data.data === true) {
+						this.updateConnectionStatus(true);
+					} else {
+						this.updateConnectionStatus(false);
 					}
-				});
+				} else {
+					uni.showToast({
+						title: "获取设备连接状态失败",
+						icon: "error"
+					});
+				}
+				// console.log("获取设备连接状态",this.device.deviceSN);
 			} catch (error) {
 				console.error('获取设备连接状态失败：', error);
 				uni.showToast({
-					title: "获取设备连接状态失败",
+					title: "获取设备连接状态异常",
 					icon: "error"
 				});
 			}
 		},
-		startDeviceConnectionStatusCheck() {
-			// 获取设备连接状态
-			this.getDeviceConnectionStatus()
-				.then(() => {
-					// 成功后，5秒后再次获取状态
-					setTimeout(this.startDeviceConnectionStatusCheck, 5000);
-				})
-				.catch((error) => {
-					console.error("获取设备连接状态失败:", error);
-					// 失败后，5秒后重试
-					setTimeout(this.startDeviceConnectionStatusCheck, 5000);
-				});
-		},
+
 		updateWateringState(isWatering) {
+			console.log("updateWateringState isWatering", isWatering);
 			this.warteringimageSrc = isWatering ? "../../static/deviceCard/stopwartering.png" : "../../static/deviceCard/startwartering.png";
 			this.buttonText = isWatering ? "正在浇花" : "开始浇花";
 			this.buttonEnabled = !isWatering;

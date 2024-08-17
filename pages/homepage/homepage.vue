@@ -83,8 +83,10 @@ export default {
 	// 释放监听事件
 	beforeDestroy() {
 		// 移除监听事件  
+		uni.$off('LoginID');
 		uni.$off('addDevice');
 		uni.$off('deleteDevice');
+		uni.$off('saveUserInfo');
 	},
 	methods: {
 		// 等待事件触发
