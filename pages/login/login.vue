@@ -34,58 +34,44 @@ export default {
 				duration: 2000
 			});
 		},
+		// 设置全局变量
+        setGlobalUserInfo(userInfo, openID) {
+            const app = getApp().globalData;
+            app.WxOpenId = openID;
+            app.username = userInfo.username;
+            app.userAvater = userInfo.userAvater;
+            app.userTel = userInfo.userTel;
+            app.userID = userInfo.userID;
+        },
 		async userLogin() {
 			try {
-				uni.showLoading({
-					title: "正在登录中"
-				});
+				uni.showLoading({ title: "正在登录中" });
 				// 禁用登录按钮
 				this.loginDisabled = true;
+
+				
 				// 获取用户 code
 				const code = await this.getWxCode();
+				if (!code) throw new Error('获取用户 code 失败');
 				//获取用户openid
 				const openID = await this.getWxOpneId(code);
-				// const openID = -1;
-				if (openID == -1) {
-					uni.showToast({
-						title: "获取openid失败" + JSON.stringify(openID),
-						image: ""
-					});
-					return;
-				}
+				if (openID === -1) throw new Error('获取 OpenID 失败');
 				// 检查用户是否存在
 				const userExists = await this.checkUser(openID);
 				if (!userExists) {
 					// 用户不存在，添加用户到数据库
 					await this.createUser(openID);
 				}
-				try {
-					const res = await uniCloud.callFunction({
-						name: 'getUserInfo',
-						data: {
-							WxOpenId: openID,
-						},
-					});
-					console.log('获取用户信息：', res.result.data);
-					const userInfo = res.result.data;
-					//获取用户信息，并置全局变量
-					getApp().globalData.WxOpenId = openID;
-					getApp().globalData.username = userInfo.username;
-					getApp().globalData.userAvater = userInfo.userAvater;
-					getApp().globalData.userTel = userInfo.userTel;
-					getApp().globalData.userID = userInfo.userID;
 
-				} catch (err) {
-					uni.hideLoading();
-					console.error('获取用户信息失败：', err);
-					uni.showToast({
-						title: "获取用户信息失败" + JSON.stringify(err),
-						image: ""
-					});
-				}
-				uni.hideLoading();
-				// 登录完成后恢复按钮
-				this.loginDisabled = false;
+				const res = await uniCloud.callFunction({
+					name: 'getUserInfo',
+					data: { WxOpenId: openID, },
+				});
+				const userInfo = res.result.data;
+				if (!userInfo) throw new Error('获取用户信息失败');
+				//获取用户信息，并置全局变量
+				this.setGlobalUserInfo(userInfo, openID);
+
 				// 跳转到首页
 				uni.reLaunch({
 					url: '/pages/homepage/homepage',
@@ -94,13 +80,11 @@ export default {
 						console.log("登录信息");
 					}
 				});
-			}
-			catch (error) {
+			} catch (error) {
 				console.error('userLogin() fail: ', error);
-				uni.showToast({
-					title: "登录异常，请重试" + JSON.stringify(error),
-					image: ""
-				});
+				this.handleError("登录异常，请重试：" + error.message);
+			} finally {
+				uni.hideLoading();
 				// 登录完成后恢复按钮
 				this.loginDisabled = false;
 			}
@@ -114,11 +98,11 @@ export default {
 					return res.code;
 				} else {
 					this.handleError('登录失败！', res.errMsg);
-					return -1;
+					return null;
 				}
 			} catch (error) {
 				this.handleError('获取用户 code 失败', error);
-				return -1;
+				return null;
 			}
 		},
 		//获取微信用户OpenID
@@ -169,9 +153,7 @@ export default {
 		async createUser(openid) {
 			const res = await uniCloud.callFunction({
 				name: "createUser",
-				data: {
-					WxOpenId: openid
-				}
+				data: { WxOpenId: openid }
 			});
 			if (res.result.code !== 0) {
 				throw new Error('用户添加失败');
@@ -185,14 +167,14 @@ export default {
 				provider: 'weixin',
 				desc: "用于登录",
 				success: res => {
-					console.log('登录成功，code:', res.rawData);
+					console.log('登录成功, code:', res.rawData);
 					console.log('userinfo:', res.userInfo);
 					uni.reLaunch({
 						url: '/pages/homepage/homepage'
 					});
 				},
 				fail: res => {
-					console.log('登录失败，code:', res);
+					console.log('登录失败, code:', res);
 				}
 			});
 		},
