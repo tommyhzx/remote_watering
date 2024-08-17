@@ -18,7 +18,7 @@
 		<swiper class="swiper" interval="interval" indicator-dots="true" circular="true">
 			<!-- 遍历用户下的设备 -->
 			<swiper-item v-for="(device, index) in devices" :key="index">
-				<DeviceCard :device="device">123</DeviceCard>
+				<DeviceCard :device="device"></DeviceCard>
 			</swiper-item>
 			<!-- 若用户当前没有设备，则显示添加设备按钮 -->
 			<swiper-item class="add-device-btn-containor" v-if="showAddDeviceBtn">
@@ -67,27 +67,24 @@ export default {
 	},
 	// 每次页面跳转回来后触发
 	async onLoad(option) {
-		// 登录后，传入wxID，从数据库获取用户的设备列表
-		const deviceData = await this.waitForEvent('LoginID');
-		await this.getUserDevices(deviceData);
-		// 添加设备后，将设备添加到数据库
-		const addDeviceData = await this.waitForEvent('addDevice');
-		await this.addDeviceToDatabase(addDeviceData);
-		// 删除设备后，从设备列表中删除设备
-		const deleteDeviceSN = await this.waitForEvent('deleteDevice');
-		this.deleteDeviceFromList(deleteDeviceSN);
-		// 保存用户信息后，更新用户信息
-		const userData = await this.waitForEvent('saveUserInfo');
-		this.updateUserInfo(userData);
+		console.log("onLoad");
+	},
+	async mounted() {
+		// 在 mounted 钩子中监听事件
+		uni.$on('LoginID', this.getUserDevices);
+		uni.$on('addDevice', this.addDeviceToDatabase);
+		uni.$on('deleteDevice', this.deleteDeviceFromList);
+		uni.$on('saveUserInfo', this.updateUserInfo);
 	},
 	// 页面显示时隐藏首页按钮
 	onShow() {
 		uni.hideHomeButton();
 	},
 	// 释放监听事件
-	onUnload() {
+	beforeDestroy() {
 		// 移除监听事件  
 		uni.$off('addDevice');
+		uni.$off('deleteDevice');
 	},
 	methods: {
 		// 等待事件触发
@@ -148,6 +145,7 @@ export default {
 		},
 		// 从设备列表中删除设备
 		deleteDeviceFromList(deviceSN) {
+			console.log("删除设备后的设备列表为：", deviceSN);
 			this.devices = this.devices.filter(device => device.deviceSN !== deviceSN);
 		},
 		// 更新用户信息
@@ -182,9 +180,9 @@ export default {
 			});
 		},
 		showError(msg, err) {
-            console.error(msg, err);
-            uni.showToast({ title: msg });
-        }
+			console.error(msg, err);
+			uni.showToast({ title: msg });
+		}
 	}
 }
 </script>

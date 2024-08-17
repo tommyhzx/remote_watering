@@ -17,7 +17,7 @@
 			</view>
 		</view>
 		<view class="button-containor">
-			<view class='pic-button' :class="buttonEnabled == true ? '' : 'img_notClick'">
+			<view class='pic-button' :class="buttonEnabled ? '' : 'img_notClick'">
 				<image class="col2Image" :src="warteringimageSrc" mode="heightFix" @touchstart="onWaterring(device)"
 					@touchend="stopWaterring(device)" :disabled="!buttonEnabled"></image>
 			</view>
@@ -26,7 +26,6 @@
 		<view class='delete-containor'>
 			<image class="delete-pic" :src="deletePicUrl" mode="heightFix" @click="deleteDevice"></image>
 		</view>
-		<!-- </view> -->
 	</view>
 </template>
 
@@ -60,80 +59,79 @@ export default {
 		this.startDeviceConnectionStatusCheck();
 	},
 	methods: {
-		onWaterring(device) {
-			// console.log("send tcp message",device)
+
+		async onWaterring(device) {
 			this.sendTcpMessage(device, "on");
-			this.warteringimageSrc = "../../static/deviceCard/stopwartering.png";
-			this.buttonText = "正在浇花",
-			this.buttonEnabled = false;
+			this.updateWateringState(true);
 			// 当浇水按钮点击超过10s后，自动停止浇水
 			this.wateringTimeout = setTimeout(() => {
-                this.stopWaterring(device);
-            }, 10000);
+				this.stopWaterring(device);
+			}, 10000);
 		},
 		stopWaterring(device) {
 			// 清除定时器
-            if (this.wateringTimeout) {
-                clearTimeout(this.wateringTimeout);
-                this.wateringTimeout = null;
-            }
-			let count = 0;	
+			if (this.wateringTimeout) {
+				clearTimeout(this.wateringTimeout);
+				this.wateringTimeout = null;
+			}
+			// 发送停止浇水的消息2次，避免没收到
+			let count = 0;
 			const interval = setInterval(() => {
 				this.sendTcpMessage(device, "off");
 				count++
 				if (count === 2) {
 					clearInterval(interval);
-					this.warteringimageSrc = "../../static/deviceCard/startwartering.png";
-					this.buttonText = "开始浇花",
-					this.buttonEnabled = true;
+					this.updateWateringState(false);
 				}
 			}, 300);
 		},
-		sendTcpMessage(device, action) {
-			uni.request({
-				url: 'https://apis.bemfa.com/va/postmsg', //api接口，详见接入文档
-				method: "POST",
-				data: {  //请求字段，详见巴法云接入文档，http接口
-					uid: "c2421290f7d14fa38251e5f77aac931a",
-					topic: this.device.deviceSN,
-					type: 3,
-					msg: action   //发送消息为on的消息
-				},
-				header: {
-					'content-type': "application/x-www-form-urlencoded"
-				},
-				success: res => {
-					console.log("发送成功：", action)
-				}
-			});
-		},
-		deleteDevice() {
-			console.log("delete", this.device);
-			const device = this.device;
-			uni.showModal({
-				title: '删除设备',
-				content: '是否确认要删除该设备？',
-				success: function (res) {
-					if (res.confirm) {
-						console.log('用户点击确定', device);
-						uniCloud.callFunction({
-							name: "deleteDevice",
-							data: {
-								device: device
-							}
-						}).then(res => {
-							if (res.result.code != 0) {
-								console.log("deleteDevice Fail，", res.result.msg);
-							} else {
-								//发送消息到主页，删除设备
-								uni.$emit("deleteDevice", device.deviceSN);
-							}
-						});
-					} else if (res.cancel) {
-						console.log('用户点击取消');
+		async sendTcpMessage(device, action) {
+			try {
+				await uni.request({
+					url: 'https://apis.bemfa.com/va/postmsg', //api接口，详见接入文档
+					method: "POST",
+					data: {  //请求字段，详见巴法云接入文档，http接口
+						uid: "c2421290f7d14fa38251e5f77aac931a",
+						topic: this.device.deviceSN,
+						type: 3,
+						msg: action   //发送消息为on的消息
+					},
+					header: {
+						'content-type': "application/x-www-form-urlencoded"
 					}
-				}
+				})
+				console.log("发送成功：", action);
+			} catch (err) {
+				console.error("发送失败：", err);
+			}
+		},
+		async deleteDevice() {
+			const device = this.device;
+			const res = await uni.showModal({
+				title: '删除设备',
+				content: '是否确认要删除该设备？'
 			});
+			if (res.confirm) {
+				try {
+					const result = await uniCloud.callFunction({
+						name: "deleteDevice",
+						data: { device: device }
+					});
+					console.log("reslut删除设备", result);
+					if (result.result.code !== 0) {
+						uni.showToast({ title: "设备删除失败" });
+					} else {
+						//发送消息到主页，删除设备
+						console.log("删除设备", device.deviceSN);
+						uni.$emit("deleteDevice", device.deviceSN);
+					}
+				} catch (error) {
+					uni.showToast({ title: "设备删除异常" });
+				}
+			} else if (res.cancel) {
+				console.log('用户点击取消');
+				uni.$emit("deleteDevice", device.deviceSN);
+			}
 		},
 
 		// 定义获取设备连接状态的方法
@@ -187,6 +185,15 @@ export default {
 					setTimeout(this.startDeviceConnectionStatusCheck, 5000);
 				});
 		},
+		updateWateringState(isWatering) {
+			this.warteringimageSrc = isWatering ? "../../static/deviceCard/stopwartering.png" : "../../static/deviceCard/startwartering.png";
+			this.buttonText = isWatering ? "正在浇花" : "开始浇花";
+			this.buttonEnabled = !isWatering;
+		},
+		updateConnectionStatus(isConnected) {
+			this.connectStatusScr = isConnected ? "../../static/deviceCard/connect.png" : "../../static/deviceCard/wifi_disconnect.png";
+			this.connectStatus = isConnected ? "在线" : "离线";
+		}
 	},
 }
 </script>
