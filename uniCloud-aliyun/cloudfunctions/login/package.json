@@ -1,5 +1,5 @@
 {
-  "name": "checkUserById",
+  "name": "login",
   "dependencies": {},
   "extensions": {
     "uni-cloud-jql": {}

@@ -1,7 +1,7 @@
-// 'use strict';
-const db = uniCloud.database()
-exports.main = async (event, context) => {
-	
+'use strict';
+const db = uniCloud.database();
+// 在数据库检查用户是否存在
+exports.checkUserById = async (event, context) => {
 	try {
 	        // 获取传入的用户ID			
 	        const { WxOpenId } = event

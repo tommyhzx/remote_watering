@@ -1,6 +1,6 @@
 'use strict';
 const db = uniCloud.database()
-exports.main = async (event, context) => {
+exports.createUser = async (event, context) => {
 
 	try {
 	        // 获取传入的用户ID

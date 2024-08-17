@@ -48,14 +48,20 @@ export default {
 				uni.showLoading({ title: "正在登录中" });
 				// 禁用登录按钮
 				this.loginDisabled = true;
+				// 从缓存中获取 openID
+				let openID = uni.getStorageSync('openID');
+				openID = null;
+				console.log("getStorageSync openID:", openID);
+				if (!openID) {
+					// 获取用户 code
+					const code = await this.getWxCode();
+					if (!code) throw new Error('获取用户 code 失败');
+					//获取用户openid
+					openID = await this.getWxOpneId(code);
+					if (openID === -1) throw new Error('获取 OpenID 失败');
 
-				
-				// 获取用户 code
-				const code = await this.getWxCode();
-				if (!code) throw new Error('获取用户 code 失败');
-				//获取用户openid
-				const openID = await this.getWxOpneId(code);
-				if (openID === -1) throw new Error('获取 OpenID 失败');
+					uni.setStorageSync('openID', openID);
+				}
 				// 检查用户是否存在
 				const userExists = await this.checkUser(openID);
 				if (!userExists) {
@@ -64,12 +70,15 @@ export default {
 				}
 
 				const res = await uniCloud.callFunction({
-					name: 'getUserInfo',
-					data: { WxOpenId: openID, },
+					name: 'login',
+					data: { 
+						action: "getUserInfo",
+						WxOpenId: openID, 
+					},
 				});
 				const userInfo = res.result.data;
 				if (!userInfo) throw new Error('获取用户信息失败');
-				//获取用户信息，并置全局变量
+				//获取用户信息，并置全局变量，以便其他页面使用
 				this.setGlobalUserInfo(userInfo, openID);
 
 				// 跳转到首页
@@ -109,9 +118,13 @@ export default {
 		async getWxOpneId(code) {
 			try {
 				const res = await uniCloud.callFunction({
-					name: "getWxOpenId",
-					data: { code }
+					name: "login",
+					data: { 
+						action: "getWxOpenId",
+                        code
+					}
 				});
+				console.log("getWxOpneId2 res=", res);
 				if (res.result.code == 0) {
 					//用户不存在
 					console.log('用户的 OpenID:', res.result.data.openId);
@@ -122,7 +135,9 @@ export default {
 					return -1;
 				}
 			} catch (error) {
+				console.error('获取 OpenID 失败:', error);
 				this.handleError('获取 OpenID 失败', error);
+				
 				return -1;
 			}
 		},
@@ -131,8 +146,11 @@ export default {
 		async checkUser(openid) {
 			try {
 				const res = await uniCloud.callFunction({
-					name: "checkUserById",
-					data: { WxOpenId: openid }
+					name: "login",
+					data: { 
+						action: "checkUserById",
+						WxOpenId: openid 
+					}
 				});
 
 				// 返回值0表示用户不存在，-1表示用户存在
@@ -152,8 +170,11 @@ export default {
 		//在数据库创建新用户
 		async createUser(openid) {
 			const res = await uniCloud.callFunction({
-				name: "createUser",
-				data: { WxOpenId: openid }
+				name: "login",
+				data: { 
+					action: "createUser",
+					WxOpenId: openid 
+				}
 			});
 			if (res.result.code !== 0) {
 				throw new Error('用户添加失败');
@@ -180,8 +201,8 @@ export default {
 		},
 	},
 	onLoad() {
-		const datatime = "ID" + Date.now();
-		console.log("onLoad time:", datatime);
+		// 进入小程序时自动登录
+		this.userLogin();
 	}
 }
 </script>

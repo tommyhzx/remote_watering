@@ -1,7 +1,9 @@
 'use strict';
-const db = uniCloud.database()
-exports.main = async (event, context) => {
-	// 从 event 中获取 WxOpenId
+const db = uniCloud.database();
+
+// 获取微信 OpenID
+exports.getUserInfo = async (event, context) => {
+    // 从 event 中获取 WxOpenId
 	const { WxOpenId } = event;
 	
 	try {

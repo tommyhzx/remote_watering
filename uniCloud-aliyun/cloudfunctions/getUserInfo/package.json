@@ -1,7 +1,0 @@
-{
-  "name": "getUserInfo",
-  "dependencies": {},
-  "extensions": {
-    "uni-cloud-jql": {}
-  }
-}
