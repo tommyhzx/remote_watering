@@ -48,7 +48,7 @@ export default {
 			deviceSN: [],
 			//当前页面已添加设备的信息
 			devices: [],
-			showAddDeviceBtn: true, // 若swiper没有设备，则添加一个按钮
+			// showAddDeviceBtn: true, // 若swiper没有设备，则添加一个按钮
 
 			avatarUrl: getApp().globalData.userAvater || '/static/pic/defaultAvatar.png',// 存储用户头像地址
 			userName: getApp().globalData.username,
