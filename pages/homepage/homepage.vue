@@ -6,8 +6,12 @@
 			</view>
 
 			<view class="peiwang">
-				<image class="peiwang-img" :src="peiwangUrl" @click="peiwang" mode="heightFix" />
-				<text>一键配网</text>
+				<picker mode="selector" :range="peiwangOptions" @change="onPeiwangChange">
+					<view class="picker">
+						<!-- <image class="peiwang-img" :src='peiwangUrl' @click="peiwang" mode="heightFix" /> -->
+						<text>{{ selectedPeiwang }}</text>
+					</view>
+				</picker>
 			</view>
 			<view class="welcom">
 				<text class="welcom-text">欢迎, {{ userName }}</text>
@@ -55,6 +59,9 @@ export default {
 			addPicUrl: "/static/homepage/add_device.png",
 			peiwangUrl: "https://mp-0c7f093e-1151-46a0-9859-1d831d548ad6.cdn.bspapp.com/peiwang.png",
 			addBtnUrl: "https://mp-0c7f093e-1151-46a0-9859-1d831d548ad6.cdn.bspapp.com/add-btn.png",
+			// 一键配网
+			peiwangOptions: ['WiFi配网', '蓝牙配网'], // 配网选项
+			selectedPeiwang: '设备配网', // 默认显示的文本
 		};
 	},
 	computed: {
@@ -166,7 +173,19 @@ export default {
 				url: '/pages/about/about' // 跳转到个人主页
 			});
 		},
-		peiwang() {
+
+		/* ************ 配网相关  开始 ************** */
+
+		onPeiwangChange(e) {
+			const index = e.detail.value;
+			this.selectedPeiwang = this.peiwangOptions[index];
+			if (index === '0') {
+				this.wifiPeiwang(); // WiFi配网
+			} else if (index === '1') {
+				this.bluetoothPeiwang(); // 蓝牙配网
+			}
+		},
+		wifiPeiwang() {
 			uni.navigateToMiniProgram({
 				appId: 'wxc8125e5b4219faab',
 				path: 'pages/ap/ap',
@@ -181,6 +200,15 @@ export default {
 				}
 			});
 		},
+		bluetoothPeiwang() {
+			// 蓝牙配网逻辑
+			console.log('蓝牙配网');
+			uni.navigateTo({
+				url: '/pages/bluetoothNetwork' // 确保路径正确
+			});
+		},
+		/* ************ 配网相关  结束 ************** */
+
 		showError(msg, err) {
 			console.error(msg, err);
 			uni.showToast({ title: msg });

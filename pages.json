@@ -37,7 +37,15 @@
 				"enablePullDownRefresh" : false,
 				"navigationBarBackgroundColor": "#FFE100"
 			}
-		}
+		},
+		{
+			"path": "pages/bluetoothNetwork",
+			"style": {
+			  "navigationBarTitleText": "蓝牙网络",
+			  "enablePullDownRefresh" : true,
+			  "navigationBarBackgroundColor": "#FFE100"
+			}
+		  }
 		
 	],
 	"globalStyle": {
