@@ -3,19 +3,23 @@
         <uni-section class="step" title="操作步骤" type="line" padding>
             <uni-steps :options="list1" :active="step_active" />
         </uni-section>
+
         <uni-section class="scan-device" title="步骤1-扫描设备" type="line">
             <template v-slot:right>
-                <button class="mini-btn, scan-btn" size="mini" @click="scanDevices">扫描设备</button>
+                <button class="mini-btn scan-btn" size="mini" @click="scanDevices">扫描设备</button>
             </template>
             <uni-collapse>
-                <uni-collapse-item class="collapse-item" title="蓝牙设备">
+                <uni-collapse-item class="collapse-item" title="蓝牙设备" :open="isCollapseOpen">
                     <scroll-view class="device-list" scroll-y="true">
                         <uni-list>
-                            <uni-list-item v-for="(device, index) in test_devices" :key="index" :title="device.name"
-                                :note=device.deviceId thumb="https://qiniu-web-assets.dcloud.net.cn/unidoc/zh/unicloudlogo.png" thumb-size="sm" rightText="连接设备">
+                            <uni-list-item v-for="(device, index) in devices" :key="index" :title="device.name"
+                                :note="device.deviceId"
+                                thumb="https://qiniu-web-assets.dcloud.net.cn/unidoc/zh/unicloudlogo.png"
+                                thumb-size="sm" rightText="连接设备">
                                 <template v-slot:footer>
                                     <button @click="connectDevice(device)">
                                         <image class="slot-image" :src="connect_icon" mode="widthFix"></image>
+                                        <text>{{ device.RSSI }}</text>
                                     </button>
                                 </template>
                             </uni-list-item>
@@ -24,23 +28,26 @@
                 </uni-collapse-item>
             </uni-collapse>
         </uni-section>
-        <!-- 调试 -->
-        <!-- <scroll-view class="device-list" scroll-y="true">
-            <div class="device-card" v-for="device in test_devices" :key="device.deviceId">
-                <h3>{{ device.name }}</h3>
-                <button @click="connectDevice(device)" class="connect-button">
-                    <img class='img' :src="connect_icon" alt="Connect" />
-                    <text>connect</text>
-                </button>
+
+        <uni-section title="已连接设备" type="line" v-if="connectedDevice">
+            <uni-card :title="connectedDevice.name" extra="状态：已连接">
+                <text class="uni-body">MAC地址: {{ connectedDevice.deviceId }}</text>
+            </uni-card>
+        </uni-section>
+        <uni-section title="配置设备连接WiFi的账号密码" type="line">
+            <div v-if="connectedDevice" class="connected-device">
+                <uni-forms :modelValue="WiFiFormData">
+                    <uni-forms-item label="账号" required>
+                        <uni-easyinput v-model="WiFiFormData.ssid" placeholder="请输入WiFi名" />
+                    </uni-forms-item>
+                    <uni-forms-item label="密码" required>
+                        <uni-easyinput type="password" v-model="WiFiFormData.password"
+                            placeholder="请输入密码"></uni-easyinput>
+                    </uni-forms-item>
+                </uni-forms>
+                <button type="primary" :loading="configDevice" @click="startPairing">开始配网</button>
             </div>
-        </scroll-view> -->
-
-
-        <div v-if="connectedDevice" class="connected-device">
-            <h2>Connected Device: {{ connectedDevice.name }}</h2>
-            <button @click="startPairing">Start Pairing</button>
-            <button @click="sendHelloWorld">Send HelloWorld</button>
-        </div>
+        </uni-section>
     </div>
 </template>
 
@@ -62,6 +69,15 @@ export default {
             connectedDevice: null,
             connect_icon: '../static/icon/connection.png',
             isScanning: false, // 添加这个变量
+            // 默认收起设备列表
+            isCollapseOpen: false,
+            // 配网过程中的状态
+            configDevice: false,
+            // wifi表单数据
+            WiFiFormData: {
+                ssid: '123',
+                password: '123'
+            },
             // 构建一个测试device
             test_devices: [
                 { deviceId: '123456', name: 'Test Device' },
@@ -80,6 +96,8 @@ export default {
     methods: {
         async scanDevices() {
             this.isScanning = true; // 开始扫描时设置为 true
+            // 步骤1- 扫描设备->连接设备
+            this.step_active = 1
             this.devices = []; // 每次扫描前清空设备列表
             try {
                 console.log('Scanning for Bluetooth devices...');
@@ -88,12 +106,24 @@ export default {
                 await uni.startBluetoothDevicesDiscovery();
 
                 uni.onBluetoothDeviceFound((res) => {
-                    const devices = res.devices.map(device => ({
-                        deviceId: device.deviceId,
-                        name: device.name || device.localName || 'Unknown Device'
-                    }));
-                    this.devices = [...this.devices, ...devices];
+                    console.log('onBluetoothDeviceFound', res);
+                    res.devices.forEach(device => {
+                        // 获取设备的名字，如果没有名字则使用 localName 或者 Unknown Device
+                        const deviceName = device.name || device.localName || 'Unknown Device';
+                        // 过滤掉名字为 Unknown Device 的设备
+                        if (deviceName !== 'Unknown Device') {
+                            const existingDevice = this.devices.find(d => d.deviceId === device.deviceId);
+                            if (!existingDevice) {
+                                this.devices.push({
+                                    deviceId: device.deviceId,
+                                    name: deviceName
+                                });
+                            }
+                        }
+                    });
                 });
+                // 扫描出设备时，展开设备列表
+                this.isCollapseOpen = true;
             } catch (error) {
                 console.error('Error scanning for Bluetooth devices:', error);
             } finally {
@@ -103,13 +133,12 @@ export default {
         // 连接设备
         async connectDevice(device) {
             try {
-                console.log(`Connecting to device ${device.name}...`);
                 await uni.createBLEConnection({
                     deviceId: device.deviceId
                 });
-                console.log(`Connected to device ${device.name}`);
                 this.connectedDevice = device;
-
+                // 停止蓝牙设备扫描
+                await uni.stopBluetoothDevicesDiscovery();
                 // 获取设备的服务
                 const servicesRes = await uni.getBLEDeviceServices({
                     deviceId: device.deviceId
@@ -126,40 +155,112 @@ export default {
                 this.characteristicId = characteristic.uuid;
                 console.log(`Service ID: ${this.serviceId}, Characteristic ID: ${this.characteristicId}`);
                 // 连接成功后跳转到下一步
-                this.step_active = 1
+                this.step_active = 2
+                // 连接完设备后，清空设备列表
+                this.devices = [];
+                // 连接完设备后，收起设备列表
+                this.isCollapseOpen = false;
             } catch (error) {
                 console.error(`Error connecting to device ${device.name}:`, error);
             }
         },
-        startPairing() {
+        // 开始配对
+        async startPairing() {
             // 开始蓝牙配对过程的代码
-        },
-        async sendHelloWorld() {
             if (!this.connectedDevice || !this.serviceId || !this.characteristicId) {
-                console.error('No connected device or service/characteristic ID not found');
+                uni.showToast({
+                    title: "蓝牙未连接，请先连接蓝牙设备",
+                    icon: 'none', duration: 2000
+                });
                 return;
             }
-
+            this.configDevice = true;
+            // 发送WiFi账号密码
             try {
-                const buffer = new ArrayBuffer(10);
+                // 拼接要发送的消息
+                const ssid = this.WiFiFormData.ssid;
+                const password = this.WiFiFormData.password;
+                const message = `SSID:${ssid}-PASSWORD:${password}`;
+                const buffer = new ArrayBuffer(message.length);
                 const dataView = new DataView(buffer);
-                const message = 'helloworld';
+
                 for (let i = 0; i < message.length; i++) {
                     dataView.setUint8(i, message.charCodeAt(i));
                 }
 
                 await uni.writeBLECharacteristicValue({
                     deviceId: this.connectedDevice.deviceId,
-                    serviceId: this.serviceId, // 替换为你的服务ID
-                    characteristicId: this.characteristicId, // 替换为你的特征ID
+                    serviceId: this.serviceId, // 服务ID
+                    characteristicId: this.characteristicId, // 特征ID
                     value: buffer
                 });
-
-                console.log('Message sent: helloworld');
+                // 等待蓝牙反馈结果
+                const result = await this.waitForBluetoothResponse();
+                if (result) {
+                    uni.showToast({
+                        title: "配对成功",
+                        icon: "success"
+                    });
+                } else {
+                    uni.showToast({
+                        title: "配对失败",
+                        icon: "none"
+                    });
+                }
             } catch (error) {
                 console.error('Error sending message:', error);
+            } finally {
+                // 关闭按钮等待状态
+                this.configDevice = false;
+                // 配对完成后，显示完成
+                this.step_active = 3
             }
+        },
+        // 等待蓝牙反馈结果，20秒内没有反馈则认为配对失败
+        waitForBluetoothResponse() {
+            return new Promise((resolve, reject) => {
+                let isResponseReceived = false;
+
+                // 模拟接收蓝牙反馈结果
+                uni.onBLECharacteristicValueChange((res) => {
+                    const value = new TextDecoder().decode(res.value);
+                    console.log('Received value:', value);
+                    if (value === 'true') {
+                        isResponseReceived = true;
+                        resolve(true);
+                    } else {
+                        isResponseReceived = true;
+                        resolve(false);
+                    }
+                });
+
+                // 如果20秒内没有接收到反馈结果，则认为配对失败
+                setTimeout(() => {
+                    if (!isResponseReceived) {
+                        console.log('No response received');
+                        resolve(false);
+                    }
+                }, 20000);
+            });
+        },
+        // 退出页面时关闭蓝牙连接
+        onUnload() {
+            console.log('beforeDestroy');
+            if (this.connectedDevice) {
+                uni.closeBLEConnection({
+                    deviceId: this.connectedDevice.deviceId,
+                    success: () => {
+                        console.log('Bluetooth connection closed');
+                    },
+                    fail: (error) => {
+                        console.error('Error closing Bluetooth connection:', error);
+                    }
+                });
+            } 
         }
+    },
+    onUnload() {
+        this.onUnload();
     }
 };
 </script>
@@ -173,6 +274,12 @@ export default {
     gap: 20px;
 
     .step {
+        width: 100%;
+    }
+
+    // 每个标题靠左对齐
+    uni-section {
+        text-align: left;
         width: 100%;
     }
 
@@ -192,10 +299,6 @@ export default {
         }
 
         .device-list {
-            // display: flex;
-            // flex-direction: column;
-            // justify-content: center;
-            // align-items: center;
             width: 100%;
             height: 50vh;
 
@@ -203,72 +306,4 @@ export default {
     }
 
 }
-
-// .device-list {
-//     display: flex;
-//     flex-direction: column;
-//     // justify-content: center;
-//     // align-items: center;
-//     // gap: 16px;
-//     // margin-top: 20px;
-//     padding: 20px;
-//     width: 90%;
-//     height: 50vh;
-//     background-color: #218838;
-
-//     .device-card {
-//         display: flex;
-//         flex-direction: row;
-//         justify-content: space-between;
-//         align-items: center;
-//         background-color: #da3c3c;
-//         border: 1px solid #ddd;
-//         border-radius: 8px;
-//         margin: 10px;
-//         padding: 10px;
-//         width: 90%;
-//         box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-//         text-align: center;
-
-//         h3 {
-//             margin: 0 0 10px;
-//             flex-grow: 1;
-//         }
-
-//         .connect-button {
-//             background: none;
-//             border: none;
-//             padding: 0;
-//             cursor: pointer;
-
-//             .img {
-//                 width: 20px;
-//                 height: 20px;
-//             }
-//         }
-//     }
-// }
-
-
-
-// .connected-device {
-//     margin-top: 20px;
-
-//     h2 {
-//         margin-bottom: 10px;
-//     }
-
-//     button {
-//         background-color: #28a745;
-//         color: white;
-//         border: none;
-//         padding: 10px 20px;
-//         border-radius: 4px;
-//         cursor: pointer;
-//         margin-right: 10px;
-
-//         &:hover {
-//             background-color: #218838;
-//         }
-//     }
-// }</style>
+</style>
