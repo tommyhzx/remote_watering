@@ -75,26 +75,30 @@ export default {
 	// 每次页面跳转回来后触发
 	async onLoad(option) {
 		console.log("onLoad");
-	},
-	async mounted() {
-		// 在 mounted 钩子中监听事件
 		uni.$on('LoginID', this.getUserDevices);
 		uni.$on('addDevice', this.addDeviceToDatabase);
 		uni.$on('deleteDevice', this.deleteDeviceFromList);
 		uni.$on('saveUserInfo', this.updateUserInfo);
 	},
-	// 页面显示时隐藏首页按钮
-	onShow() {
-		uni.hideHomeButton();
-	},
-	// 释放监听事件
-	beforeDestroy() {
+	onUnload() {
+		console.log("onUnload");
 		// 移除监听事件  
 		uni.$off('LoginID');
 		uni.$off('addDevice');
 		uni.$off('deleteDevice');
 		uni.$off('saveUserInfo');
 	},
+
+	async mounted() {
+		console.log("mounted");
+		// 在 mounted 钩子中监听事件
+
+	},
+	// 页面显示时隐藏首页按钮
+	onShow() {
+		uni.hideHomeButton();
+	},
+
 	methods: {
 		// 等待事件触发
 		waitForEvent(eventName) {
@@ -106,6 +110,7 @@ export default {
 		},
 		// 获取用户设备
 		async getUserDevices(deviceData) {
+			console.log("获取用户设备为：", deviceData);
 			try {
 				const res = await uniCloud.callFunction({
 					name: "getUserDevices",

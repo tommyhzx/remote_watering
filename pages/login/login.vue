@@ -43,6 +43,7 @@ export default {
             app.userTel = userInfo.userTel;
             app.userID = userInfo.userID;
         },
+		// 主要登录函数
 		async userLogin() {
 			try {
 				uni.showLoading({ title: "正在登录中" });
@@ -76,16 +77,16 @@ export default {
 					},
 				});
 				const userInfo = res.result.data;
+				console.log("userInfo=", userInfo);
 				if (!userInfo) throw new Error('获取用户信息失败');
 				//获取用户信息，并置全局变量，以便其他页面使用
-				this.setGlobalUserInfo(userInfo, openID);
-
+				this.setGlobalUserInfo(userInfo, openID);			
 				// 跳转到首页
 				uni.reLaunch({
 					url: '/pages/homepage/homepage',
 					success() {
-						uni.$emit("LoginID", openID);
 						console.log("登录信息");
+						uni.$emit("LoginID", openID);
 					}
 				});
 			} catch (error) {
@@ -123,7 +124,7 @@ export default {
                         code
 					}
 				});
-				console.log("getWxOpneId2 res=", res);
+				console.log("getWxOpneId res=", res);
 				if (res.result.code == 0) {
 					//用户不存在
 					console.log('用户的 OpenID:', res.result.data.openId);
@@ -154,6 +155,7 @@ export default {
 
 				// 返回值0表示用户不存在，-1表示用户存在
 				if (res.result.code === 0) {
+					console.log('用户不存在');
 					return false;
 				} else if (res.result.code === -1) {
 					return true;

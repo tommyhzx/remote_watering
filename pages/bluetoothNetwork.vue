@@ -180,7 +180,7 @@ export default {
                 // 拼接要发送的消息
                 const ssid = this.WiFiFormData.ssid;
                 const password = this.WiFiFormData.password;
-                const message = `SSID:${ssid}-PASSWORD:${password}`;
+                const message = `CONFIG:SSID:${ssid}-PASSWORD:${password};`;
                 const buffer = new ArrayBuffer(message.length);
                 const dataView = new DataView(buffer);
 
