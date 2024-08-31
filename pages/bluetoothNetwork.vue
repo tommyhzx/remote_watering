@@ -30,7 +30,8 @@
         </uni-section>
 
         <uni-section title="已连接设备" type="line" v-if="connectedDevice">
-            <uni-card :title="connectedDevice.name" extra="状态：已连接">
+            <uni-card :title="connectedDevice ? connectedDevice.name : '设备未连接'"
+                :extra="isConnected ? '状态: 已连接' : '状态: 已断开'">
                 <text class="uni-body">MAC地址: {{ connectedDevice.deviceId }}</text>
             </uni-card>
         </uni-section>
@@ -45,7 +46,7 @@
                             placeholder="请输入密码"></uni-easyinput>
                     </uni-forms-item>
                 </uni-forms>
-                <button type="primary" :loading="configDevice" @click="startPairing">开始配网</button>
+                <button class="peiwang-btn" type="primary" :loading="configDevice" @click="startPairing">开始配网</button>
             </div>
         </uni-section>
     </div>
@@ -69,6 +70,11 @@ export default {
             connectedDevice: null,
             connect_icon: '../static/icon/connection.png',
             isScanning: false, // 添加这个变量
+            isConnected: false, // 蓝牙是否连接
+
+            // 蓝牙接收回调函数
+            resolveResponse: null, // 接收蓝牙信息内容
+            rejectResponse: null, // 未接收蓝牙信息
             // 默认收起设备列表
             isCollapseOpen: false,
             // 配网过程中的状态
@@ -133,35 +139,81 @@ export default {
         // 连接设备
         async connectDevice(device) {
             try {
-                await uni.createBLEConnection({
+                const res = await uni.createBLEConnection({
                     deviceId: device.deviceId
                 });
-                this.connectedDevice = device;
-                // 停止蓝牙设备扫描
-                await uni.stopBluetoothDevicesDiscovery();
-                // 获取设备的服务
-                const servicesRes = await uni.getBLEDeviceServices({
-                    deviceId: device.deviceId
-                });
-                const service = servicesRes.services[0]; // 假设使用第一个服务
-                this.serviceId = service.uuid;
+                if (res.errCode === 0) {
+                    this.isConnected = true; // 设置标志变量为 true 表示设备已连接
+                    this.connectedDevice = device;
+                    // 停止蓝牙设备扫描
+                    await uni.stopBluetoothDevicesDiscovery();
+                    // 获取设备的服务
+                    const servicesRes = await uni.getBLEDeviceServices({
+                        deviceId: device.deviceId
+                    });
+                    const service = servicesRes.services[0]; // 假设使用第一个服务
+                    this.serviceId = service.uuid;
 
-                // 获取服务的特征
-                const characteristicsRes = await uni.getBLEDeviceCharacteristics({
-                    deviceId: device.deviceId,
-                    serviceId: this.serviceId
-                });
-                const characteristic = characteristicsRes.characteristics[0]; // 假设使用第一个特征
-                this.characteristicId = characteristic.uuid;
-                console.log(`Service ID: ${this.serviceId}, Characteristic ID: ${this.characteristicId}`);
-                // 连接成功后跳转到下一步
-                this.step_active = 2
-                // 连接完设备后，清空设备列表
-                this.devices = [];
-                // 连接完设备后，收起设备列表
-                this.isCollapseOpen = false;
+                    // 获取服务的特征
+                    const characteristicsRes = await uni.getBLEDeviceCharacteristics({
+                        deviceId: device.deviceId,
+                        serviceId: this.serviceId
+                    });
+                    const characteristic = characteristicsRes.characteristics[0]; // 假设使用第一个特征
+                    this.characteristicId = characteristic.uuid;
+                    console.log(`Service ID: ${this.serviceId}, Characteristic ID: ${this.characteristicId}`);
+                    // 连接成功后跳转到下一步
+                    this.step_active = 2
+                    // 连接完设备后，清空设备列表
+                    this.devices = [];
+                    // 连接完设备后，收起设备列表
+                    this.isCollapseOpen = false;
+
+
+                    // 检查特征值是否包含 notify 属性
+                    const characteristiccurrent = characteristicsRes.characteristics.find(c => c.properties.notify || c.properties.indicate);
+                    if (!characteristiccurrent) {
+                        throw new Error('No characteristic supports notify or indicate');
+                    }
+                    console.log("characteristicsRes :", characteristicsRes.characteristics);
+
+                    // 订阅BLE notify消息
+                    try {
+                        await uni.notifyBLECharacteristicValueChange({
+                            state: true, // 启用 notify
+                            deviceId: device.deviceId,
+                            serviceId: this.serviceId,
+                            characteristicId: this.characteristicId,
+                            success: (res) => {
+                                console.log('notifyBLECharacteristicValueChange success', res);
+                            },
+                            fail: (error) => {
+                                console.error('notifyBLECharacteristicValueChange fail', error);
+                            }
+                        });
+
+                        // 监听特征值变化
+                        uni.onBLECharacteristicValueChange(this.receiveNotifyData);
+                        // 监听特征值变化
+                        // uni.onBLECharacteristicValueChange((res) => {
+                        //     // const value = new TextDecoder().decode(res.value);
+                        //     const value = this.arrayBufferToString(res.value);
+                        //     console.log('onBLECharacteristicValueChange Received:', value);
+                        //     // 处理接收到的消息
+                        // });
+                    } catch (error) {
+                        console.error('Error subscribing to characteristic:', error);
+                    }
+                } else {
+                    this.isConnected = false; // 设置标志变量为 false 表示设备未连接
+                }
+
             } catch (error) {
                 console.error(`Error connecting to device ${device.name}:`, error);
+                uni.showToast({
+                    title: "蓝牙连接失败，请重试",
+                    icon: 'none', duration: 2000
+                });
             }
         },
         // 开始配对
@@ -187,16 +239,20 @@ export default {
                 for (let i = 0; i < message.length; i++) {
                     dataView.setUint8(i, message.charCodeAt(i));
                 }
-
+                // 发送消息
+                console.log('Sending message:', message);
                 await uni.writeBLECharacteristicValue({
                     deviceId: this.connectedDevice.deviceId,
                     serviceId: this.serviceId, // 服务ID
                     characteristicId: this.characteristicId, // 特征ID
                     value: buffer
                 });
+                console.log('Message sent successfully');
+
                 // 等待蓝牙反馈结果
                 const result = await this.waitForBluetoothResponse();
-                if (result) {
+                console.log('waitForBluetoothResponse result:', result);
+                if (result === 'success') {
                     uni.showToast({
                         title: "配对成功",
                         icon: "success"
@@ -218,49 +274,79 @@ export default {
         },
         // 等待蓝牙反馈结果，20秒内没有反馈则认为配对失败
         waitForBluetoothResponse() {
+            console.log('enter waitForBluetoothResponse');
             return new Promise((resolve, reject) => {
-                let isResponseReceived = false;
+                // 设置一个定时器，10秒后调用 reject
+                const timer = setTimeout(() => {
+                    reject('Timeout: No response received within 1 second');
+                }, 10000);
+                // 保存 resolve 和 reject 方法，以便在 receiveNotifyData 中调用
+                this.resolveResponse = (result) => {
+                    clearTimeout(timer); // 清除定时器
+                    resolve(result); // 调用 resolve
+                };
+                this.rejectResponse = (error) => {
+                    clearTimeout(timer); // 清除定时器
+                    reject(error); // 调用 reject
+                };
 
-                // 模拟接收蓝牙反馈结果
-                uni.onBLECharacteristicValueChange((res) => {
-                    const value = new TextDecoder().decode(res.value);
-                    console.log('Received value:', value);
-                    if (value === 'true') {
-                        isResponseReceived = true;
-                        resolve(true);
-                    } else {
-                        isResponseReceived = true;
-                        resolve(false);
-                    }
-                });
-
-                // 如果20秒内没有接收到反馈结果，则认为配对失败
-                setTimeout(() => {
-                    if (!isResponseReceived) {
-                        console.log('No response received');
-                        resolve(false);
-                    }
-                }, 20000);
             });
+            // return new Promise((resolve, reject) => {
+            //     console.log('Waiting for waitForBluetoothResponse');
+            //     let isResponseReceived = false;
+            //     // 保存resolve方法，以便在接收到消息时调用
+            //     // this.resolveResponse = resolve;
+            //     // 如果20秒内没有接收到反馈结果，则认为配对失败
+            //     setTimeout(() => {
+            //         if (!isResponseReceived) {
+            //             console.log('No response received');
+            //             resolve(false);
+            //         }
+            //     }, 20000);
+            // });
         },
-        // 退出页面时关闭蓝牙连接
-        onUnload() {
-            console.log('beforeDestroy');
-            if (this.connectedDevice) {
-                uni.closeBLEConnection({
-                    deviceId: this.connectedDevice.deviceId,
-                    success: () => {
-                        console.log('Bluetooth connection closed');
-                    },
-                    fail: (error) => {
-                        console.error('Error closing Bluetooth connection:', error);
-                    }
-                });
-            } 
+        receiveNotifyData(res) {
+            const value = this.arrayBufferToString(res.value);
+            // 处理接收到的消息
+            if (value === 'CONFIG_DONE') {
+                if (this.resolveResponse) {
+                    this.resolveResponse('success');
+                    this.resolveResponse = null; // 清空 resolveResponse
+                }
+            }
+        },
+        // ArrayBuffer转字符串
+        arrayBufferToString(buffer) {
+            const uint8Array = new Uint8Array(buffer);
+            const string = String.fromCharCode.apply(null, uint8Array);
+            return string;
         }
     },
+    mounted() {
+        console.log('mounted');
+        // 监听蓝牙连接状态变化
+        uni.onBLEConnectionStateChange((res) => {
+            if (!res.connected) {
+                console.log('Bluetooth connection lost');
+                this.isConnected = false; // 设置标志变量为 false 表示设备未连接
+            }
+        });
+
+    },
     onUnload() {
-        this.onUnload();
+        // 退出页面时关闭蓝牙连接
+        if (this.connectedDevice) {
+            uni.closeBLEConnection({
+                deviceId: this.connectedDevice.deviceId,
+                success: () => {
+                    console.log('Bluetooth connection closed');
+                },
+                fail: (error) => {
+                    console.error('Error closing Bluetooth connection:', error);
+                }
+            });
+        }
+
     }
 };
 </script>
@@ -303,6 +389,11 @@ export default {
             height: 50vh;
 
         }
+    }
+
+    .peiwan-btn {
+        background-color: #FFE100;
+        color: #000;
     }
 
 }
